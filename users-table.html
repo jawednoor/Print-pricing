@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جدول المستخدمين</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #328cc0 0%, #00bcd4 100%);
+            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px #328cc055;
+            padding: 40px 32px 32px 32px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background: #e3e3e3;
+            font-size: 1em;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="text"] {
+            width: 90%;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #bbb;
+            font-size: 1em;
+            text-align: center;
+        }
+        input[type="password"] {
+            width: 90%;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #bbb;
+            font-size: 1em;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        .add-btn, .send-btn {
+            background: linear-gradient(90deg,#00bcd4 0%,#328cc0 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #328cc033;
+            margin: 8px 4px;
+        }
+        .delete-btn {
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 16px;
+            cursor: pointer;
+        }
+        .error {
+            color: #e74c3c;
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>جدول المستخدمين</h2>
+        <div id="errorMsg" class="error"></div>
+        <table id="usersTable">
+            <thead>
+                <tr>
+                    <th>اسم المستخدم</th>
+                    <th>كلمة المرور</th>
+                    <th>حذف</th>
+                </tr>
+            </thead>
+            <tbody id="usersTableBody">
+            </tbody>
+        </table>
+        <button class="add-btn" onclick="addUserRow()">إضافة مستخدم</button>
+    <button class="send-btn" onclick="sendUsers()">إرسال</button>
+    <button class="add-btn" style="background:linear-gradient(90deg,#328cc0 0%,#4caf50 100%);margin-right:8px;" onclick="window.history.back()">رجوع للصفحة السابقة</button>
+    </div>
+    <script>
+    let users = [];
+
+    // جلب بيانات المستخدمين من السيرفر عند فتح الصفحة
+    window.onload = function() {
+    fetch('/user-data.json')
+            .then(res => res.json())
+            .then(data => {
+                if (Array.isArray(data)) {
+                    users = data;
+                } else {
+                    users = [];
+                }
+                renderTable();
+            })
+            .catch(() => {
+                users = [];
+                renderTable();
+            });
+    };
+
+    function renderTable() {
+        const tbody = document.getElementById('usersTableBody');
+        tbody.innerHTML = '';
+        users.forEach((user, idx) => {
+            const tr = document.createElement('tr');
+            // اسم المستخدم
+            const tdUser = document.createElement('td');
+            const userInput = document.createElement('input');
+            userInput.type = 'text';
+            userInput.value = user.username;
+            userInput.placeholder = 'اسم المستخدم';
+            userInput.oninput = function() {
+                users[idx].username = userInput.value;
+            };
+            tdUser.appendChild(userInput);
+            tr.appendChild(tdUser);
+            // كلمة المرور
+            const tdPass = document.createElement('td');
+            const passInput = document.createElement('input');
+            passInput.type = 'password';
+            passInput.value = user.password;
+            passInput.placeholder = '******';
+            passInput.maxLength = 6;
+            passInput.style.marginLeft = '4px';
+            passInput.oninput = function() {
+                // السماح فقط بـ 6 خانات
+                if (passInput.value.length > 6) {
+                    passInput.value = passInput.value.slice(0,6);
+                }
+                users[idx].password = passInput.value;
+            };
+            // زر العين لإظهار/إخفاء كلمة المرور
+            const eyeBtn = document.createElement('button');
+            eyeBtn.type = 'button';
+            eyeBtn.innerHTML = '<span style="font-size:1.2em;">👁️</span>';
+            eyeBtn.style.background = 'none';
+            eyeBtn.style.border = 'none';
+            eyeBtn.style.cursor = 'pointer';
+            eyeBtn.style.verticalAlign = 'middle';
+            eyeBtn.onclick = function() {
+                passInput.type = passInput.type === 'password' ? 'text' : 'password';
+            };
+            // تغليف الحقل وزر العين داخل div أفقي
+            const passWrapper = document.createElement('div');
+            passWrapper.style.display = 'flex';
+            passWrapper.style.alignItems = 'center';
+            passWrapper.style.justifyContent = 'center';
+            passWrapper.appendChild(passInput);
+            passWrapper.appendChild(eyeBtn);
+            tdPass.appendChild(passWrapper);
+            tr.appendChild(tdPass);
+            // زر حذف
+            const tdDelete = document.createElement('td');
+            const delBtn = document.createElement('button');
+            delBtn.textContent = 'حذف';
+            delBtn.className = 'delete-btn';
+            delBtn.onclick = function() {
+                users.splice(idx, 1);
+                renderTable();
+            };
+            tdDelete.appendChild(delBtn);
+            tr.appendChild(tdDelete);
+            tbody.appendChild(tr);
+        });
+    }
+    function addUserRow() {
+        users.push({ username: '', password: '' });
+        renderTable();
+    }
+    function sendUsers() {
+        const errorMsg = document.getElementById('errorMsg');
+        errorMsg.textContent = '';
+        // تحقق من صحة البيانات
+        for (let user of users) {
+            if (user.username && (!user.password || user.password.length !== 6)) {
+                errorMsg.textContent = 'كلمة المرور يجب أن تكون 6 خانات إذا كان اسم المستخدم غير فارغ';
+                return;
+            }
+            if (user.password && (!user.username)) {
+                errorMsg.textContent = 'اسم المستخدم مطلوب إذا كانت كلمة المرور مدخلة';
+                return;
+            }
+        }
+        // تصفية المستخدمين الفارغين
+        const validUsers = users.filter(u => u.username && u.password && u.password.length === 6);
+        if (validUsers.length === 0) {
+            errorMsg.textContent = 'يجب إدخال مستخدم واحد على الأقل بشكل صحيح';
+            return;
+        }
+        // إرسال إلى السيرفر
+    fetch('/save-users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(validUsers)
+        })
+        .then(async res => {
+            const text = await res.text();
+            let result = null;
+            try {
+                result = text ? JSON.parse(text) : null;
+            } catch(e) {
+                errorMsg.textContent = 'الرد من السيرفر غير صالح (ليس JSON)';
+                return;
+            }
+            if (!res.ok) {
+                errorMsg.textContent = (result && result.error) || 'خطأ في إرسال البيانات';
+                return;
+            }
+            // تحديث الجدول بعد الحفظ
+            users = validUsers;
+            renderTable();
+            errorMsg.textContent = 'تم حفظ المستخدمين بنجاح على السيرفر!';
+        })
+        .catch(e => {
+            errorMsg.textContent = 'تعذر الاتصال بالسيرفر!';
+        });
+    }
+    // بدء الجدول بصف واحد فارغ
+    addUserRow();
+    </script>
+</body>
+</html>

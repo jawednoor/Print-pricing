@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تصنيفات الطباعة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #328cc0 0%, #00bcd4 100%);
+            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px #328cc055;
+            padding: 40px 32px 32px 32px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            transition: all 0.3s ease;
+            margin: 20px;
+        }
+        @media (max-width: 600px) {
+            .container {
+            background: none;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 25px 10px;
+            max-width: 100vw;
+            margin: 0;
+            }
+        }
+        h2 {
+            color: #328cc0;
+            font-size: 1.8rem;
+            margin-bottom: 24px;
+            font-weight: bold;
+        }
+        .category-btn {
+            display: block;
+            margin: 28px auto;
+            width: 90%;
+            padding: 32px 0;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(90deg,#00bcd4 0%,#328cc0 100%);
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #328cc033;
+            transition: background 0.2s;
+            text-align: center;
+        }
+        /* تنسيق متجاوب للأزرار */
+        .button-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 5px;
+        }
+        .button-list button, .button-list a {
+            width: 90%;
+            max-width: 340px;
+            margin: 0;
+        }
+        /* للشاشات العريضة */
+        /* للشاشات العريضة مثل الآيباد */
+        @media (orientation: landscape) and (min-height: 400px) {
+            .container {
+                max-width: 800px;
+                padding: 30px;
+            }
+            .button-list {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            .button-list button, .button-list a {
+                width: 100%;
+                max-width: none;
+            }
+            .category-btn {
+                height: 90px;
+                margin: 0;
+                padding: 15px;
+            }
+        }
+
+        /* للشاشات العريضة جداً مثل الكمبيوتر */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1000px;
+            }
+            .button-list {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 25px;
+            }
+        }
+        /* تحسينات إضافية للشاشات العريضة جداً */
+        @media (min-width: 1200px) {
+            .button-list {
+                grid-template-columns: repeat(3, minmax(300px, 1fr));
+            }
+        }
+        @media (max-width: 600px) {
+            .container img {
+                margin-top: 50px;
+            }
+            html, body {
+                height: 100vh;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+            body {
+                background: url('bg.gif') center center / cover no-repeat;
+            }
+            .container {
+                max-width: 100vw;
+                min-height: 100vh;
+                border-radius: 0;
+                padding: 25px 10px;
+                box-shadow: none;
+            }
+            
+            h2 {
+                font-size: 2rem;
+                margin-bottom: 14px;
+            }
+            }
+            .category-btn {
+                font-size: 1.7rem;
+                padding: 15px 0;
+                border-radius: 12px;
+                margin: 0;
+                background: linear-gradient(90deg,#00bcd4 0%,#328cc0 100%);
+                color: #fff;
+            }
+        .category-btn:hover {
+            background: linear-gradient(90deg,#05131b 0%,#00bcd4 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <img src="logo-albasmahart2.png" alt="شعار البصمة آرت" style="max-width:300px; margin-bottom: 24px;">
+    <div class="button-list">
+        <button class="category-btn" onclick="location.href='books-magazines.html'">كتب ومجلات</button>
+        <button class="category-btn" onclick="location.href='brochures-stickers.html'">بروشورات ولواصق</button>
+        <button class="category-btn" onclick="location.href='letters-memos.html'">خطابات ومذكرات</button>
+        <button class="category-btn" onclick="location.href='envelopes.html'">أظرف</button>
+        <button class="category-btn" onclick="location.href='invoices.html'">فواتير</button>
+    <button id="admin-btn" class="category-btn" style="display:none;background:linear-gradient(90deg,#ff9800 0%,#f44336 100%);" onclick="location.href='cpanel.html'">زر المدير</button>
+    </div>
+    </div>
+</body>
+<script>
+// إظهار زر المدير فقط إذا كان اسم المستخدم المخزن هو admin
+try {
+    var user = localStorage.getItem('username');
+    if (user === 'admin') {
+        document.getElementById('admin-btn').style.display = 'block';
+    }
+} catch(e) {}
+
+
+
+ ////////////////////////////////
+        // ==========================
+        // تعطيل console.log في بيئة الإنتاج فقط (ليس على localhost)
+        // ==========================
+        //  
+        if (typeof console !== "undefined" && window.location.hostname !== "localhost") {
+            console.log = function () {};
+        }
+
+              // تعطيل console.log دائماً في جميع البيئات
+                if (typeof console !== "undefined") {
+                    console.log = function () {};
+                }
+
+
+        //=========================================
+        // نهاية كود تعطيل console.log
+        //=========================================
+
+   ///////////////////////////////////
+            //=========================
+        // كود إخفاء سكريبت من F12
+        //=========================
+        (function removeScriptTagsFromDOM() {
+            try {
+                // إخفاء جميع وسوم <script> من عناصر DevTools (F12) عند تحميل الصفحة
+                if (window.location.href.startsWith('http://localhost:3000/')) return;
+                var scripts = document.querySelectorAll('script');
+                scripts.forEach(function(s) {
+                    s.parentNode && s.parentNode.removeChild(s);
+                });
+            } catch(e) {}
+        })();
+        //=========================
+        //نهاية كود إخفاء سكريبت من F12
+        //=========================
+
+</script>
+
+<!-- خدمة إبقاء السيرفر نشطاً -->
+<script>
+// دالة ping لإبقاء السيرفر نشطاً
+function keepServerAlive() {
+	// تجنب إرسال ping في بيئة التطوير المحلية
+	if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+		return;
+	}
+	
+	fetch('/ping', {
+		method: 'GET',
+		headers: {
+			'Cache-Control': 'no-cache'
+		}
+	}).then(response => {
+		if (response.ok) {
+			console.log('Server ping successful:', new Date().toLocaleTimeString('ar-SA'));
+		}
+	}).catch(error => {
+		console.log('Server ping failed:', error.message);
+	});
+}
+
+// بدء خدمة keep-alive بعد تحميل الصفحة
+window.addEventListener('load', function() {
+	// ping فوري بعد 5 ثوان من التحميل
+	setTimeout(keepServerAlive, 5000);
+	
+	// ثم ping كل 4 دقائق
+	setInterval(keepServerAlive, 240000);
+});
+</script>
+</html>

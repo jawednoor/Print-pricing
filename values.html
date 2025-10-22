@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جدول القيم والنسب</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+    body { font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f7f7f7; margin: 0; padding: 20px; direction: rtl; font-size: 18px; }
+    h1 { text-align: center; font-size: 2em; font-weight: bold; color: #328cc0; margin-bottom: 24px; letter-spacing: 1px; font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    table { border-collapse: collapse; width: 100%; margin: 0; background: #fff; box-shadow: 0 2px 8px #ccc; direction: rtl; font-size: 1em; table-layout: fixed; }
+    th, td { padding: 6px 12px; text-align: center; height: 32px; border: 1px solid #ddd; }
+    th { background: #e3e3e3; font-size: 1em; font-weight: bold; color: #333; letter-spacing: 0.5px; }
+    tr:nth-child(even) { background: #f2f2f2; }
+    td[contenteditable="true"] { background: #fcfcfc; transition: background 0.2s; font-size: 1em; }
+    td[contenteditable="true"]:focus { background: #e0f7fa; outline: 1.5px solid #00bcd4; }
+    .add-row-btn {
+        margin: 0 12px 0 0;
+        width: 170px;
+        height: 54px;
+        padding: 0;
+        background: #00bcd4;
+        color: #fff;
+        border: none;
+        border-radius: 16px;
+        cursor: pointer;
+    font-size: 13px;
+        font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-weight: bold;
+        transition: background 0.2s, box-shadow 0.2s;
+        box-shadow: 0 2px 6px #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        letter-spacing: 0.5px;
+    }
+    .add-row-btn:hover {
+        background: #0097a7;
+        box-shadow: 0 4px 12px #bbb;
+    }
+    .add-row-btn[style*="background:#4caf50"] { background: #4caf50 !important; }
+    .add-row-btn[style*="background:#4caf50"]:hover { background: #388e3c !important; }
+    .add-row-btn[style*="background:#ff9800"] { background: #ff9800 !important; color: #fff !important; }
+    .add-row-btn[style*="background:#ff9800"]:hover { background: #f57c00 !important; }
+    .add-row-btn[style*="background:#e91e63"] { background: #e91e63 !important; }
+    .add-row-btn[style*="background:#e91e63"]:hover { background: #ad1457 !important; }
+    </style>
+</head>
+<body>
+    <h1>جدول القيم والنسب</h1>
+    <div style="display:flex;justify-content:center;align-items:center;gap:16px;max-width:900px;margin:0 auto 18px auto;">
+    <label for="increasePercent" style="font-size:0.8em;font-weight:bold;color:#328cc0;">نسبة الزيادة:</label>
+    <input type="number" id="increasePercent" name="increasePercent" step="0.01" style="padding:10px 10px;font-size:1em;width:120px;border:1px solid #ccc;border-radius:4px;">
+    <button class="add-row-btn" style="background:#0097a7;" onclick="increasePercentAll()">زيادة النسبة</button>
+        <button class="add-row-btn" onclick="addRow()">إضافة صف جديد</button>
+        <input type="file" id="excelInput" accept=".xlsx,.xls,.csv" style="display:none" onchange="importExcel(event)">
+        <button class="add-row-btn" style="background:#4caf50" onclick="document.getElementById('excelInput').click()">استيراد من إكسل</button>
+    <button id="download-template" class="add-row-btn" style="background:#ff9800;">تحميل قالب إكسل</button>
+    <button class="add-row-btn" style="background:#e91e63" onclick="sendData()">إرسال البيانات</button>
+    <button class="add-row-btn" style="background:linear-gradient(90deg,#328cc0 0%,#4caf50 100%);margin-right:8px;" onclick="window.location.href='cpanel.html'">رجوع للوحة التحكم</button>
+    <button class="add-row-btn" style="background:linear-gradient(90deg,#328cc0 0%,#4caf50 100%);margin-right:8px;" onclick="window.history.back()">رجوع للصفحة السابقة</button>
+    </div>
+    <table id="valuesTable">
+        <thead>
+            <tr>
+                <th>القيمة</th>
+                <th>النسبة المئوية</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+            </tr>
+        </tbody>
+    </table>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script>
+    // دالة زيادة النسبة المئوية لكل الصفوف
+    function increasePercentAll() {
+        const increase = parseFloat(document.getElementById('increasePercent').value);
+        if (isNaN(increase)) return;
+        const table = document.getElementById('valuesTable').getElementsByTagName('tbody')[0];
+        const rows = table.getElementsByTagName('tr');
+        for (let i = 0; i < rows.length; i++) {
+            const percentCell = rows[i].getElementsByTagName('td')[1];
+            if (percentCell) {
+                let val = percentCell.textContent.replace('%','').replace(',','.').trim();
+                let num = parseFloat(val);
+                if (!isNaN(num)) {
+                    let newVal = num + increase;
+                    percentCell.textContent = newVal + '%';
+                }
+            }
+        }
+    }
+    // زر تحميل قالب إكسل
+    document.addEventListener('DOMContentLoaded', function() {
+        var btn = document.getElementById('download-template');
+        if (btn) {
+            btn.onclick = function() {
+                const wb = XLSX.utils.book_new();
+                const ws_data = [
+                    ["value","النسبة المئوية"],
+                    ["100","15%"],
+                    ["50","70%"]
+                ];
+                const ws = XLSX.utils.aoa_to_sheet(ws_data);
+                XLSX.utils.book_append_sheet(wb, ws, "القيم");
+                XLSX.writeFile(wb, "values_template.xlsx");
+            };
+        }
+    });
+    // جلب البيانات من values.json وعرضها في الجدول عند فتح الصفحة
+    function loadTableFromJson() {
+    fetch('/values.json')
+            .then(res => {
+                if (!res.ok) throw new Error('تعذر جلب البيانات من السيرفر');
+                return res.json();
+            })
+            .then(data => {
+                const table = document.getElementById('valuesTable').getElementsByTagName('tbody')[0];
+                table.innerHTML = '';
+                data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    let td1 = document.createElement('td');
+                    td1.contentEditable = "true";
+                    td1.textContent = row["value"] || '';
+                    tr.appendChild(td1);
+                    let td2 = document.createElement('td');
+                    td2.contentEditable = "true";
+                    // استخدم الحقل الإنجليزي percent
+                    let val = (row["percent"] || '').replace(/%/g, '').replace(/\s/g, '');
+                    td2.textContent = val ? val + '%' : '';
+                    td2.addEventListener('input', handlePercentInput);
+                    tr.appendChild(td2);
+                    table.appendChild(tr);
+                });
+            })
+            .catch(error => {
+                const table = document.getElementById('valuesTable').getElementsByTagName('tbody')[0];
+                table.innerHTML = '';
+                const tr = document.createElement('tr');
+                const td = document.createElement('td');
+                td.colSpan = 2;
+                td.style.color = 'red';
+                td.textContent = 'تعذر جلب البيانات من السيرفر. تأكد أن السيرفر يعمل.';
+                tr.appendChild(td);
+                table.appendChild(tr);
+            });
+    }
+
+    // جمع البيانات من الجدول وإرسالها إلى values.json عبر fetch
+    function sendData() {
+        const table = document.getElementById('valuesTable').getElementsByTagName('tbody')[0];
+        const rows = table.getElementsByTagName('tr');
+        let data = [];
+        for (let i = 0; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            if (cells.length >= 2) {
+                let value = cells[0].textContent.trim();
+                let percentStr = cells[1].textContent.trim();
+                if (value !== '' || percentStr !== '') {
+                    // استخراج الرقم وتحويله لعشري
+                    let percentNum = parseFloat(percentStr.replace('%','').replace(',','.'));
+                    let decimal = isNaN(percentNum) ? '' : percentNum/100;
+                    data.push({
+                        "value": value,
+                        "percent": percentStr,
+                        "decimal": decimal
+                    });
+                }
+            }
+        }
+        // إرسال البيانات إلى السيرفر
+    fetch('/values.json', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(res => {
+            if (res.ok) {
+                alert('تم إرسال البيانات بنجاح!');
+            } else {
+                alert('حدث خطأ أثناء الإرسال');
+            }
+        })
+        .catch(() => alert('تعذر الاتصال بالسيرفر'));
+    }
+    // إضافة صف جديد
+    function addRow() {
+        const table = document.getElementById('valuesTable').getElementsByTagName('tbody')[0];
+        const newRow = document.createElement('tr');
+        let valueCell = document.createElement('td');
+        valueCell.contentEditable = "true";
+        newRow.appendChild(valueCell);
+        let percentCell = document.createElement('td');
+        percentCell.contentEditable = "true";
+        percentCell.addEventListener('input', handlePercentInput);
+        newRow.appendChild(percentCell);
+        table.appendChild(newRow);
+    }
+
+    // إضافة % تلقائياً عند كتابة الرقم
+    function handlePercentInput(e) {
+        let val = e.target.textContent.replace(/%/g, '').replace(/\s/g, '');
+        if (val !== '' && !isNaN(val)) {
+            e.target.textContent = val + '%';
+            // وضع المؤشر قبل علامة %
+            let range = document.createRange();
+            let sel = window.getSelection();
+            range.setStart(e.target.firstChild, val.length);
+            range.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+    }
+
+    // تفعيل % تلقائياً على جميع خلايا النسبة المئوية عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+        loadTableFromJson();
+    });
+
+    // استيراد من ملف إكسل أو CSV
+    function importExcel(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const data = e.target.result;
+            let workbook;
+            if (file.name.endsWith('.csv')) {
+                // معالجة CSV
+                const rows = data.split(/\r?\n/).filter(r => r.trim());
+                const table = document.getElementById('valuesTable').getElementsByTagName('tbody')[0];
+                table.innerHTML = '';
+                for (let i = 1; i < rows.length; i++) {
+                    const cols = rows[i].split(',');
+                    if (cols.length >= 2) {
+                        const tr = document.createElement('tr');
+                        let td1 = document.createElement('td');
+                        td1.contentEditable = "true";
+                        td1.textContent = cols[0];
+                        tr.appendChild(td1);
+                        let td2 = document.createElement('td');
+                        td2.contentEditable = "true";
+                        td2.textContent = cols[1];
+                        tr.appendChild(td2);
+                        table.appendChild(tr);
+                    }
+                }
+            } else {
+                // معالجة XLSX
+                workbook = XLSX.read(data, {type: 'binary'});
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const json = XLSX.utils.sheet_to_json(firstSheet, {header:1});
+                const table = document.getElementById('valuesTable').getElementsByTagName('tbody')[0];
+                table.innerHTML = '';
+                for (let i = 1; i < json.length; i++) {
+                    const row = json[i];
+                    if (row.length >= 2) {
+                        const tr = document.createElement('tr');
+                        let td1 = document.createElement('td');
+                        td1.contentEditable = "true";
+                        td1.textContent = row[0];
+                        tr.appendChild(td1);
+                        let td2 = document.createElement('td');
+                        td2.contentEditable = "true";
+                        // عرض القيمة كما هي من ملف الإكسل، مع إضافة % فقط إذا لم تكن موجودة، دون أي تحويل للرقم
+                        let percent = row[1];
+                        if (percent !== undefined && percent !== null && percent !== '') {
+                            percent = percent.toString();
+                            // إذا كانت القيمة تنتهي بـ % اتركها كما هي
+                            if (!percent.trim().endsWith('%')) {
+                                percent = percent + '%';
+                            }
+                        } else {
+                            percent = '';
+                        }
+                        td2.textContent = percent;
+                        td2.addEventListener('input', handlePercentInput);
+                        tr.appendChild(td2);
+                        table.appendChild(tr);
+                    }
+                }
+            }
+        };
+        if (file.name.endsWith('.csv')) {
+            reader.readAsText(file);
+        } else {
+            reader.readAsBinaryString(file);
+        }
+    }
+
+    // تحميل مكتبة SheetJS
+    if (typeof XLSX === 'undefined') {
+        var script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+        document.head.appendChild(script);
+    }
+    </script>
+</body>
+</html>

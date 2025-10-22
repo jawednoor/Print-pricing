@@ -1,0 +1,16 @@
+{
+  "name": "quick",
+  "version": "1.0.0",
+  "description": "مشروع أسعار الديجتال - Node.js",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "debug": "^4.4.3",
+    "express": "^4.18.2",
+    "express-session": "^1.18.2",
+    "otplib": "^12.0.1"
+  }
+}

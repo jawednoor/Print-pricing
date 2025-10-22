@@ -1,0 +1,9 @@
+{
+  "slefanBigMatte": 0.25,
+  "slefanBigGlossy": 0.3,
+  "invoicePercent": 0.2,
+  "letterPercent": 0.45,
+  "printPrice": 0.12,
+  "vat": 0.15,
+  "invoicePaperPrice": 150
+}

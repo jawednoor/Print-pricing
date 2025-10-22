@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>بروشورات ولواصق</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body{font-family:'Cairo',sans-serif;background:#f7f7f7;text-align:center;padding:40px;}
+        h2{color:#328cc0;}
+        .book-form {
+            max-width: 370px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px #328cc033;
+            padding: 18px 12px 8px 12px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+            text-align: right;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #328cc0;
+            font-weight: bold;
+            font-size: 1em;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #bbb;
+            font-size: 1.1em;
+            font-family: 'Cairo', sans-serif;
+            background: #f7fafd;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus {
+            border-color: #328cc0;
+            outline: none;
+        }
+        @media (max-width: 600px) {
+            .book-form {
+                max-width: 100vw;
+                border-radius: 0;
+                box-shadow: none;
+                padding: 10px 2px 2px 2px;
+            }
+            input, select {
+                font-size: 1em;
+                padding: 10px;
+                border-radius: 8px;
+            }
+            label {
+                font-size: 0.95em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <img src="logo-albasmahart2.png" alt="شعار البصمة آرت" style="max-width:300px; margin-bottom:24px; display:block; margin-left:auto; margin-right:auto;">
+    <form class="book-form">
+    <div id="form-error" style="display:none;color:#d32f2f;background:#fff3f3;border:1px solid #d32f2f;padding:8px 10px;border-radius:8px;margin-bottom:10px;font-weight:bold;text-align:center;"></div>
+        <div class="form-group">
+            <label for="B1">المقاس</label>
+            <select id="B1" name="B1">
+                <option value="">اختر</option>
+                <option value="A3">A3</option>
+                <option value="A4">A4</option>
+                <option value="A5">A5</option>
+                <option value="A6">A6</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="B2">نوع الورق </label>
+            <select id="B2" name="B2">
+                <option value="">اختر نوع الورق </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="B3">نوع الطباعة</label>
+            <select id="B3" name="B3">
+                <option value="">اختر نوع الطباعة</option>
+                <option value="وجه واحد">وجه واحد</option>
+                <option value="وجهين">وجهين</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="B4">السلوفان</label>
+            <select id="B4" name="B4">
+                <option value="لا">لا</option>
+                <option value="وجهين مطفي">وجهين مطفي</option>
+                <option value="وجه واحد مطفي">وجه واحد مطفي</option>
+                <option value="وجهين لامع">وجهين لامع</option>
+                <option value="وجه واحد لامع">وجه واحد لامع</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="B5">عدد الطيات</label>
+            <select id="B5" name="B5">
+                <option value="">اختر عدد الطيات</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="B6">الكمية</label>
+            <input type="number" id="B6" name="B6" min="1" placeholder="مثال: 500">
+        </div>
+
+     <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:10px;">
+            <button type="button" id="calculateBtn" style="background:linear-gradient(90deg,#027027 0%,#026e5a 100%);color:#fff;border:none;border-radius:18px;padding:0 0;width:75%;height:62px;font-size:150%;font-weight:bold;cursor:pointer;box-shadow:0 4px 18px #38f9d733;letter-spacing:1px;transition:background 0.2s,box-shadow 0.2s;display:flex;align-items:center;justify-content:center;">احسب لي</button>
+            <button type="button" id="homeBtn" title="الصفحة الرئيسية" style="background:#ec3333;border:none;border-radius:14px;padding:0;box-shadow:0 2px 8px #ffffff2c;cursor:pointer;display:flex;align-items:center;justify-content:center;width:62px;height:62px;min-width:62px;min-height:62px;max-height:62px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9.5z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </button>
+        </div>
+
+    <div style="margin-top:22px;display:flex;gap:22px;flex-wrap:nowrap;justify-content:center;align-items:stretch;">
+            <div style="background:linear-gradient(90deg,#ff9900 0%,#745804 100%);color:#fff;padding:15px 18px;border-radius:10px;min-width:50px;font-weight:bold;box-shadow:0 2px 8px #ffc10733;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                <span style="font-size:80%;margin-bottom:6px;">سعر المناديب</span>
+                <span id="D6" style="font-size:1.3em;">-</span>
+            </div>
+            <div style="background:linear-gradient(90deg,#034750 0%,#328cc0 100%);color:#fff;padding:15px 18px;border-radius:10px;min-width:50px;font-weight:bold;box-shadow:0 2px 8px #328cc033;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                <span style="font-size:80%;margin-bottom:6px;">سعر العملاء</span>
+                <span id="E6" style="font-size:1.3em;">-</span>
+            </div>
+        </div>
+
+        <!-- قائمة الكشاف -->
+        <div id="kashaf-section" style="display:block; margin-top:24px;">
+            <label style="color:#328cc0;font-weight:bold;">كشاف</label>
+            <ul style="background:#eee;border-radius:8px;padding:12px 10px;list-style:decimal;text-align:right;">
+                <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                    <div style="flex:1;min-width:120px;">
+                        <li style="display:block;margin:6px 0;">
+                            <span id="C2" style="display:inline-block;width:120px;height:48px;line-height:48px;text-align:center;background:#fff;border:1px solid #bbb;border-radius:8px;font-weight:bold;">C2</span>
+                        </li>
+                        <!-- إضافة عنصر C3 في الكشاف إذا لم يكن موجوداً -->
+                        <li style="display:block;margin:6px 0;">
+                            <span id="C3" style="display:inline-block;width:120px;height:48px;line-height:48px;text-align:center;background:#fff;border:1px solid #bbb;border-radius:8px;font-weight:bold;">C3</span>
+                            <div id="C3-error" style="color:red;font-size:0.95em;margin-top:4px;"></div>
+                        </li>
+                        <li style="display:block;margin:6px 0;">
+                            <span id="C4" style="display:inline-block;width:120px;height:48px;line-height:48px;text-align:center;background:#fff;border:1px solid #bbb;border-radius:8px;font-weight:bold;">C4</span>
+                        </li>
+                        <li style="display:block;margin:6px 0;">
+                            <span id="C5" style="display:inline-block;width:120px;height:48px;line-height:48px;text-align:center;background:#fff;border:1px solid #bbb;border-radius:8px;font-weight:bold;">C5</span>
+                        </li>
+                        <li style="display:block;margin:6px 0;">
+                            <span id="C6" style="display:inline-block;width:120px;height:48px;line-height:48px;text-align:center;background:#fff;border:1px solid #bbb;border-radius:8px;font-weight:bold;">C6</span>
+                        </li>
+                        <li style="display:block;margin:6px 0;">
+                            <span id="B10" style="display:inline-block;width:120px;height:48px;line-height:48px;text-align:center;background:#fff;border:1px solid #bbb;border-radius:8px;font-weight:bold;">B10</span>
+                            <div id="B10-error" style="color:red;font-size:0.95em;margin-top:4px;"></div>
+                        </li>
+                    </div>
+                    <div style="flex:1;min-width:120px;">
+                        <li style="display:block;margin:6px 0;">
+                            <span id="C7" style="display:inline-block;width:120px;height:48px;line-height:48px;text-align:center;background:#fff;border:1px solid #bbb;border-radius:8px;font-weight:bold;">C7</span>
+                            <span id="C7-error" style="color:red;font-size:0.95em;display:none;margin-right:8px;"></span>
+                        </li>
+                        <li style="display:block;margin:6px 0;">
+                            <span id="C8" style="display:inline-block;width:120px;height:48px;line-height:48px;text-align:center;background:#fff;border:1px solid #bbb;border-radius:8px;font-weight:bold;">C8</span>
+                        </li>
+                        <li style="display:block;margin:6px 0;">
+                            <span id="C9" style="display:inline-block;width:120px;height:48px;line-height:48px;text-align:center;background:#fff;border:1px solid #bbb;border-radius:8px;font-weight:bold;">C9</span>
+                        </li>
+                        <li style="display:block;margin:6px 0;">
+                            <span id="C10" style="display:inline-block;width:120px;height:48px;line-height:48px;text-align:center;background:#fff;border:1px solid #bbb;border-radius:8px;font-weight:bold;">C10</span>
+                        </li>
+                        <li style="display:block;margin:6px 0;">
+                            <span id="B11" style="display:inline-block;width:120px;height:48px;line-height:48px;text-align:center;background:#fff;border:1px solid #bbb;border-radius:8px;font-weight:bold;">B11</span>
+                        </li>
+                    </div>
+                </div>
+            </ul>
+        </div>
+    </form>
+    <script>
+        // تعبئة قائمة عدد الطيات من 1 إلى 10
+        const foldsSelect = document.getElementById('B5');
+        for(let i=0; i<=10; i++){
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            foldsSelect.appendChild(option);
+        }
+        // تعبئة قائمة نوع الورق الداخلي من السيرفر (نفس منطق الكتب)
+        fetch('/inner-paper-types')
+            .then(res => res.json())
+            .then(data => {
+                const select = document.getElementById('B2');
+                if (Array.isArray(data.types)) {
+                    data.types.forEach(name => {
+                        const option = document.createElement('option');
+                        option.value = name;
+                        option.textContent = name;
+                        select.appendChild(option);
+                    });
+                }
+            });
+
+        
+        // دالة لحساب قيمة C2 حسب القاعدة المطلوبة (منسوخة من books-magazines.html)
+        function getC2Value(b1, b2, papers) {
+            const colMap = { "A3": 6, "A4": 7, "A5": 8, "A6": 9, "A7": 10 };
+            const col = colMap[b1];
+            if (!col) return 0;
+            const row = papers.find(arr => arr[1] === b2);
+            if (!row) return 0;
+            return row[col] || 0;
+        }
+        // تحديث قيمة C2 عند تغيير B1 أو B2
+        function updateC2() {
+            const b1 = document.getElementById('B1').value;
+            const b2 = document.getElementById('B2').value;
+            fetch('/papers.json')
+                .then(res => res.json())
+                .then(data => {
+                    const papers = data.papers;
+                    const c2 = getC2Value(b1, b2, papers);
+                    document.getElementById('C2').textContent = (typeof formatNumber !== 'undefined') ? formatNumber(c2, 2) : c2;
+                });
+        }
+        document.getElementById('B1').addEventListener('change', updateC2);
+        document.getElementById('B2').addEventListener('change', updateC2);
+
+        ////////////////////////////////
+        // ==========================
+        // تعطيل console.log دائماً في جميع البيئات
+        if (typeof console !== "undefined") {
+            console.log = function () {};
+        }
+        // نهاية كود تعطيل console.log
+
+        ////////////////////////////////
+        // ==========================
+        // قاعدة C3 (حساب الطباعة)
+        // ==========================
+
+        // دالة لحساب قيمة C3 حسب القاعدة المطلوبة
+        function getC3Value(b1, printType, printPrice) {
+            if (b1 === "A3" && printType === "وجه واحد") return printPrice * 2;
+            if (b1 === "A3" && printType === "وجهين")   return printPrice * 4;
+            if (b1 === "A4" && printType === "وجه واحد") return printPrice * 1;
+            if (b1 === "A4" && printType === "وجهين")   return printPrice * 2;
+            if (b1 === "A5" && printType === "وجه واحد") return printPrice / 2;
+            if (b1 === "A5" && printType === "وجهين")   return printPrice * 1;
+            if (b1 === "A6" && printType === "وجه واحد") return printPrice / 4;
+            if (b1 === "A6" && printType === "وجهين")   return printPrice / 2;
+            if (b1 === "A7" && printType === "وجه واحد") return printPrice / 8;
+            if (b1 === "A7" && printType === "وجهين")   return printPrice / 4;
+            return 0;
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            // حماية عند جلب العناصر
+            var b1 = document.getElementById('B1');
+            var b3 = document.getElementById('B3');
+            var c3 = document.getElementById('C3');
+            // إضافة الأحداث فقط إذا كانت العناصر موجودة
+            if (b1 && b3) {
+            b1.addEventListener('change', updateC3);
+            b3.addEventListener('change', updateC3);
+            // تحديث أولي
+            updateC3();
+            }
+        });
+        // تحديث قيمة C3 عند تغيير B1 أو B3
+        function updateC3() {
+            var b1 = document.getElementById('B1');
+            var b3 = document.getElementById('B3');
+            var c3 = document.getElementById('C3');
+            var c3Error = document.getElementById('C3-error');
+            if (!b1 || !b3 || !c3) {
+            if (c3Error) c3Error.textContent = 'تعذر حساب C3: أحد الحقول غير موجود.';
+            return;
+            }
+            fetch('/settings.json')
+            .then(res => res.json())
+            .then(settings => {
+                var printPrice = settings.printPrice;
+                var val = getC3Value(b1.value, b3.value, printPrice);
+                if (val === 0 || isNaN(val)) {
+                c3.textContent = 'C3';
+                c3Error.textContent = 'تعذر حساب C3: تحقق من اختيار المقاس ونوع الطباعة.';
+                } else {
+                c3.textContent = (typeof formatNumber !== 'undefined') ? formatNumber(val, 2) : val;
+                c3Error.textContent = '';
+                }
+            })
+            .catch(function() {
+                if (c3Error) c3Error.textContent = 'تعذر جلب بيانات settings.json';
+            });
+        }
+
+        // fallback formatNumber إذا لم تكن معرفة
+        if (typeof formatNumber === 'undefined') {
+            function formatNumber(val, digits) {
+            let num = parseFloat(val);
+            if (isNaN(num)) return digits === 2 ? "0.00" : "0.000";
+            return num.toFixed(digits || 3);
+            }
+        }
+        // تحديث C3 عند تحميل الصفحة لأول مرة
+        window.addEventListener('DOMContentLoaded', updateC3);
+
+        // ==========================
+        // نهاية كود قاعدة C3
+        // ==========================
+
+        ////////////////////////////////
+        // ==========================
+        // قاعدة C4 (حساب السلوفان)
+        // ==========================
+
+        // دالة لحساب قيمة C4 حسب القاعدة المطلوبة
+        function getC4Value(B1, B4, settings) {
+            // B1: المقاس (A3, A4, A5, A6, A7)
+            // B4: نوع السلوفان (وجه واحد مطفي/وجهين مطفي/وجه واحد لامع/وجهين لامع)
+            // settings: كائن الإعدادات من settings.json
+            // Matte
+            if ((B4 === "وجه واحد مطفي" && B1 === "A3") || (B4 === "وجهين مطفي" && B1 === "A3")) return settings.slefanBigMatte;
+            if ((B4 === "وجه واحد مطفي" && B1 === "A4") || (B4 === "وجهين مطفي" && B1 === "A4")) return settings.slefanBigMatte / 2;
+            if ((B4 === "وجه واحد مطفي" && B1 === "A5") || (B4 === "وجهين مطفي" && B1 === "A5")) return settings.slefanBigMatte / 4;
+            if ((B4 === "وجه واحد مطفي" && B1 === "A6") || (B4 === "وجهين مطفي" && B1 === "A6") || (B4 === "وجه واحد مطفي" && B1 === "A7") || (B4 === "وجهين مطفي" && B1 === "A7")) return settings.slefanBigMatte / 6;
+            // Glossy
+            if ((B4 === "وجه واحد لامع" && B1 === "A3") || (B4 === "وجهين لامع" && B1 === "A3")) return settings.slefanBigGlossy;
+            if ((B4 === "وجه واحد لامع" && B1 === "A4") || (B4 === "وجهين لامع" && B1 === "A4")) return settings.slefanBigGlossy / 2;
+            if ((B4 === "وجه واحد لامع" && B1 === "A5") || (B4 === "وجهين لامع" && B1 === "A5")) return settings.slefanBigGlossy / 4;
+            if ((B4 === "وجه واحد لامع" && B1 === "A6") || (B4 === "وجهين لامع" && B1 === "A6") || (B4 === "وجه واحد لامع" && B1 === "A7") || (B4 === "وجهين لامع" && B1 === "A7")) return settings.slefanBigGlossy / 6;
+            // Default
+            return 0;
+        }
+
+        // تحديث قيمة C4 عند تغيير B1 أو B3
+        function updateC4() {
+            var B1 = document.getElementById('B1');
+            var B4 = document.getElementById('B4');
+            var C4 = document.getElementById('C4');
+            if (!B1 || !B4 || !C4) return;
+            fetch('/settings.json')
+            .then(res => res.json())
+            .then(settings => {
+                var val = getC4Value(B1.value, B4.value, settings);
+                C4.textContent = (typeof formatNumber !== 'undefined') ? formatNumber(val, 2) : val;
+            })
+            .catch(function() {
+                C4.textContent = 'خطأ في جلب settings';
+            });
+        }
+
+        // ربط تحديث C4 عند تغيير B1 أو B3
+        document.addEventListener('DOMContentLoaded', function() {
+            var B1 = document.getElementById('B1');
+            var B4 = document.getElementById('B4');
+            if (B1 && B4) {
+            B1.addEventListener('change', updateC4);
+            B4.addEventListener('change', updateC4);
+            updateC4();
+            }
+        });
+        // تحديث C4 عند تحميل الصفحة لأول مرة
+        window.addEventListener('DOMContentLoaded', updateC4);
+
+        // ==========================
+        // نهاية كود قاعدة C4
+        // ==========================
+        ////////////////////////////////
+
+
+        // ==========================
+        // قاعدة C5 (حساب عدد الطيات)
+        // ==========================
+
+        // دالة لحساب قيمة C5 حسب القاعدة المطلوبة
+        function getC5Value(b1, b5) {
+            b5 = parseFloat(b5);
+            if (isNaN(b5)) return 0;
+            if (b1 === "A3") return b5 * 0.2;
+            if (b1 === "A4") return b5 * 0.1;
+            if (b1 === "A5") return b5 * 0.05;
+            if (b1 === "A6") return b5 * 0.03;
+            if (b1 === "A7") return b5 * 0.02;
+            return 0;
+        }
+
+        // تحديث قيمة C5 عند تغيير B1 أو B5
+        function updateC5() {
+            var b1 = document.getElementById('B1');
+            var b5 = document.getElementById('B5');
+            var c5 = document.getElementById('C5');
+            if (!b1 || !b5 || !c5) return;
+            var val = getC5Value(b1.value, b5.value);
+            c5.textContent = (typeof formatNumber !== 'undefined') ? formatNumber(val, 2) : val;
+        }
+
+        // ربط تحديث C5 عند تغيير B1 أو B5
+        document.addEventListener('DOMContentLoaded', function() {
+            var b1 = document.getElementById('B1');
+            var b5 = document.getElementById('B5');
+            if (b1 && b5) {
+            b1.addEventListener('change', updateC5);
+            b5.addEventListener('change', updateC5);
+            updateC5();
+            }
+        });
+        // تحديث C5 عند تحميل الصفحة لأول مرة
+        window.addEventListener('DOMContentLoaded', updateC5);
+
+        // ==========================
+        // نهاية كود قاعدة C5
+        // ==========================
+
+        ////////////////////////////////
+        // ==========================
+        // قاعدة C6 (حساب خاص)
+        // ==========================
+
+        // دالة لحساب قيمة C6 حسب القاعدة المطلوبة
+        function getC6Value(b2, c2, c3, papers) {
+            // ابحث عن الصف المناسب في papers
+            const row = papers.find(arr => arr[1] === b2);
+            if (!row) return 0;
+            // VLOOKUP($B$2,'121'!A:N,4,FALSE) => العمود 4 (index 3)
+            // VLOOKUP($B$2,'121'!A:N,6,FALSE) => العمود 6 (index 5)
+            const v1 = parseFloat(row[3]);
+            const v2 = parseFloat(row[5]);
+            c2 = parseFloat(c2);
+            c3 = parseFloat(c3);
+            if (isNaN(v1) || isNaN(v2) || isNaN(c2) || isNaN(c3) || v2 === 0 || c2 === 0) return 0;
+            return (v1 / v2 / c2) + c3;
+        }
+
+        // تحديث قيمة C6 عند تغيير B2 أو C2 أو C3
+        function updateC6() {
+            var b2 = document.getElementById('B2');
+            var c2 = document.getElementById('C2');
+            var c3 = document.getElementById('C3');
+            var c6 = document.getElementById('C6');
+            if (!b2 || !c2 || !c3 || !c6) return;
+            fetch('/papers.json')
+                .then(res => res.json())
+                .then(data => {
+                    var val = getC6Value(b2.value, c2.textContent, c3.textContent, data.papers);
+                    c6.textContent = (typeof formatNumber !== 'undefined') ? formatNumber(val, 2) : val;
+                })
+                .catch(function() {
+                    c6.textContent = 'خطأ في جلب papers';
+                });
+        }
+
+        // ربط تحديث C6 عند تغيير B2 أو عند تحديث C2 أو C3
+        document.addEventListener('DOMContentLoaded', function() {
+            var b2 = document.getElementById('B2');
+            var c2 = document.getElementById('C2');
+            var c3 = document.getElementById('C3');
+            if (b2) b2.addEventListener('change', updateC6);
+            // مراقبة تغيّر C2 وC3 عبر MutationObserver
+            if (c2 && c3) {
+                const observer = new MutationObserver(updateC6);
+                observer.observe(c2, { childList: true });
+                observer.observe(c3, { childList: true });
+            }
+            updateC6();
+        });
+        // تحديث C6 عند تحميل الصفحة لأول مرة
+        window.addEventListener('DOMContentLoaded', updateC6);
+        // ==========================
+        // نهاية كود قاعدة C6
+        // ==========================
+
+        ////////////////////////////////
+        // ==========================
+        // قاعدة C7 (حساب نهائي)
+        // ==========================
+
+        // دالة لحساب قيمة C7 حسب القاعدة المطلوبة
+        function getC7Value(c4, c5, c6, b6) {
+            c4 = parseFloat(c4);
+            c5 = parseFloat(c5);
+            c6 = parseFloat(c6);
+            b6 = parseFloat(b6);
+            if (isNaN(c4)) c4 = 0;
+            if (isNaN(c5)) c5 = 0;
+            if (isNaN(c6)) c6 = 0;
+            if (isNaN(b6)) b6 = 0;
+            return (c4 + c5 + c6) * b6 * 2;
+        }
+
+        // تحديث قيمة C7 عند تغيير C4 أو C5 أو C6 أو B6
+        function updateC7() {
+            var c4 = document.getElementById('C4');
+            var c5 = document.getElementById('C5');
+            var c6 = document.getElementById('C6');
+            var b6 = document.getElementById('B6');
+            var c7 = document.getElementById('C7');
+            if (!c4 || !c5 || !c6 || !b6 || !c7) return;
+            var val = getC7Value(c4.textContent, c5.textContent, c6.textContent, b6.value);
+            c7.textContent = (typeof formatNumber !== 'undefined') ? formatNumber(val, 2) : val;
+        }
+
+        // ربط تحديث C7 عند تغيير C4 أو C5 أو C6 أو B6
+        document.addEventListener('DOMContentLoaded', function() {
+            var c4 = document.getElementById('C4');
+            var c5 = document.getElementById('C5');
+            var c6 = document.getElementById('C6');
+            var b6 = document.getElementById('B6');
+            if (b6) b6.addEventListener('input', updateC7);
+            // مراقبة تغيّر C4 وC5 وC6 عبر MutationObserver
+            if (c4 && c5 && c6) {
+                const observer = new MutationObserver(updateC7);
+                observer.observe(c4, { childList: true });
+                observer.observe(c5, { childList: true });
+                observer.observe(c6, { childList: true });
+            }
+            updateC7();
+        });
+        // تحديث C7 عند تحميل الصفحة لأول مرة
+        window.addEventListener('DOMContentLoaded', updateC7);
+        // ==========================
+        // نهاية كود قاعدة C7
+        // ==========================
+
+        ////////////////////////////////
+          // ==========================
+        // قاعدة C9 (نسخ C7)
+        // ==========================
+
+        // تحديث قيمة C9 عند تغيير C7
+        function updateC9() {
+            var c7 = document.getElementById('C7');
+            var c9 = document.getElementById('C9');
+            if (!c7 || !c9) return;
+            c9.textContent = c7.textContent;
+        }
+
+        // ربط تحديث C9 عند تغيير C7
+        document.addEventListener('DOMContentLoaded', function() {
+            var c7 = document.getElementById('C7');
+            if (c7) {
+                const observer = new MutationObserver(updateC9);
+                observer.observe(c7, { childList: true });
+            }
+            updateC9();
+        });
+        // تحديث C9 عند تحميل الصفحة لأول مرة
+        window.addEventListener('DOMContentLoaded', updateC9);
+        // ==========================
+        // نهاية كود قاعدة C9
+        // ==========================
+
+        ////////////////////////////////
+        // ==========================  
+        // قاعدة B10 (حساب B10 وB11)
+        // ==========================  
+         // دالة لحساب قيمة B10 بنفس منطق قاعدة Excel
+        function getB10Value(c9, values) {
+            c9 = parseFloat(c9) || 0;
+            let sorted = values.slice().sort((a, b) => parseFloat(a.value) - parseFloat(b.value));
+            let debugValues = sorted.map(v => v.value).join(', ');
+            let debugDecimals = sorted.map(v => v.decimal).join(', ');
+            for (let i = 0; i < sorted.length; i++) {
+                let rowValue = sorted[i]["value"];
+                rowValue = parseFloat(rowValue);
+                let percentC = sorted[i]["decimal"];
+                percentC = parseFloat(percentC);
+                if (!isNaN(rowValue) && !isNaN(percentC)) {
+                    if (c9 <= rowValue) {
+                        return (c9 + (c9 * percentC)).toFixed(3);
+                    }
+                }
+            }
+            // إذا لم يجد قيمة مناسبة، أظهر جميع القيم المدخلة
+            return `C9=${c9} | values=[${debugValues}] | decimals=[${debugDecimals}]`;
+        }
+
+        // دالة لحساب قيمة ب11 حسب القاعدة المطلوبة
+        function getB11Value(b10) {
+            b10 = parseFloat(b10) || 0;
+            return b10 < 50 ? 50 : b10;
+        }
+
+        // تحديث قيمة B10 وB11 في الكشاف عند تغيير C9
+        function updateB10Kashaf() {
+            fetch('/values.json')
+                .then(res => res.json())
+                .then(values => {
+                    const c9Text = document.getElementById('C9').textContent;
+                    const errorDiv = document.getElementById('B10-error');
+                    errorDiv.textContent = '';
+                    let b10Value = 'B10';
+                    if (isNaN(parseFloat(c9Text)) || c9Text === 'C9' || c9Text === '') {
+                        document.getElementById('B10').textContent = 'B10';
+                        errorDiv.textContent = '';
+                        document.getElementById('D6').textContent = '-';
+                        document.getElementById('E6').textContent = '-';
+                    } else {
+                        const c9 = parseFloat(c9Text);
+                        const b10 = getB10Value(c9, values);
+                        // إذا كانت النتيجة رسالة تشخيصية، اعرضها في مربع الخطأ
+                        if (typeof b10 === 'string' && b10.startsWith('C9=')) {
+                            document.getElementById('B10').textContent = 'B10';
+                            errorDiv.textContent = b10;
+                            document.getElementById('D6').textContent = '-';
+                            document.getElementById('E6').textContent = '-';
+                        } else {
+                            document.getElementById('B10').textContent = b10;
+                            errorDiv.textContent = '';
+                            b10Value = b10;
+                            // لا يتم حساب D6 وE6 تلقائياً
+                        }
+                    }
+                    // تحديث B11 بناءً على قيمة B10
+                    document.getElementById('B11').textContent = getB11Value(b10Value);
+                });
+        }
+
+        // مراقبة تغيّر C9 باستخدام MutationObserver بدلاً من DOMSubtreeModified
+        document.addEventListener('DOMContentLoaded', function() {
+            var c9 = document.getElementById('C9');
+            if (c9) {
+                const observer = new MutationObserver(updateB10Kashaf);
+                observer.observe(c9, { childList: true });
+            }
+            updateB10Kashaf();
+        });
+        // ==========================
+        // نهاية كود قاعدة B10
+       // ==========================
+
+        ////////////////////////////////
+        // ==========================
+        // قاعدة D6 و E6 (منسوخة من books-magazines.html)
+        // ==========================
+
+        function updateD6E6() {
+            fetch('/settings.json')
+                .then(res => res.json())
+                .then(settings => {
+                    const b11Value = parseFloat(document.getElementById('B11').textContent) || 0;
+                    const vatValue = parseFloat(settings.vat) || 0;
+                    // حساب E6: (B11 + (B11 * 0.20)) + ((B11 + (B11 * 0.20)) * vat)
+                    const e6Base = b11Value + (b11Value * 0.20);
+                    const e6 = e6Base + (e6Base * vatValue);
+                    document.getElementById('E6').textContent = e6.toFixed(2);
+                    // حساب D6: B11 + (B11 * vat)
+                    const d6 = b11Value + (b11Value * vatValue);
+                    document.getElementById('D6').textContent = d6.toFixed(2);
+                });
+        }
+
+        // تحديث D6 وE6 فقط عند النقر على زر احسب لي
+        document.getElementById('calculateBtn').addEventListener('click', updateD6E6);
+        // التحقق من الحقول المطلوبة عند الضغط على احسب لي
+        document.getElementById('calculateBtn').addEventListener('click', function(e) {
+            var requiredFields = ['B1','B2','B3','B4','B5','B6'];
+            var firstEmpty = null;
+            var hasEmpty = false;
+            requiredFields.forEach(function(id) {
+                var el = document.getElementById(id);
+                var val = (el && (el.value !== undefined ? el.value : el.textContent));
+                if (!val || val === '' || val === 'اختر' || val === 'اختر نوع الورق ' || val === 'اختر نوع الطباعة' || val === 'اختر عدد الطيات') {
+                    hasEmpty = true;
+                    if (!firstEmpty) firstEmpty = el;
+                    if (el) el.style.borderColor = '#d32f2f';
+                } else {
+                    if (el) el.style.borderColor = '';
+                }
+            });
+            var errorDiv = document.getElementById('form-error');
+            if (hasEmpty) {
+                e.preventDefault();
+                if (errorDiv) {
+                    errorDiv.textContent = 'يجب تعبئة جميع الحقول';
+                    errorDiv.style.display = 'block';
+                }
+                if (firstEmpty) firstEmpty.focus();
+                return false;
+            } else {
+                if (errorDiv) errorDiv.style.display = 'none';
+            }
+        }, true);
+        // تحديث D6 وE6 عند تحميل الصفحة لأول مرة
+        window.addEventListener('DOMContentLoaded', function() {
+            // إذا كان حقل الكمية غير فارغ، احسب D6 وE6
+            var b6 = document.getElementById('B6');
+            if (b6 && b6.value) {
+            updateD6E6();
+            }
+        });
+
+        // عند تغيير الكمية، إذا كان الحقل فارغاً امسح D6 وE6
+        document.getElementById('B6').addEventListener('input', function() {
+            var b6 = document.getElementById('B6');
+            if (!b6.value) {
+            document.getElementById('D6').textContent = '-';
+            document.getElementById('E6').textContent = '-';
+            }
+        });
+        // ==========================
+        // نهاية كود قاعدة D6 و E6 
+        // ==========================
+
+            ////////////////////////////////
+            // ==========================
+            // زر العودة للصفحة الرئيسية
+            // ==========================
+            document.getElementById('homeBtn').addEventListener('click', function() {
+                window.location.href = 'categories.html';
+            });
+            // ==========================
+            // نهاية زر العودة للصفحة الرئيسية
+            // ==========================
+
+            ///////////////////////////////////
+            //=========================
+        // كود إخفاء سكريبت من F12
+        //=========================
+        (function removeScriptTagsFromDOM() {
+            try {
+                // إخفاء جميع وسوم <script> من عناصر DevTools (F12) عند تحميل الصفحة
+                if (window.location.href.startsWith('http://localhost:3000/')) return;
+                var scripts = document.querySelectorAll('script');
+                scripts.forEach(function(s) {
+                    s.parentNode && s.parentNode.removeChild(s);
+                });
+            } catch(e) {}
+        })();
+        //=========================
+        //نهاية كود إخفاء سكريبت من F12
+        //=========================
+
+        
+            ///////////////////////////////////
+            // ==========================
+            // دوال إظهار/إخفاء الكشاف (kashaf-section)
+            // ==========================
+            // دالة لإظهار الكشاف
+            function showKashaf() {
+                document.getElementById('kashaf-section').style.display = 'block';
+            }
+            // دالة لإخفاء الكشاف
+            function hideKashaf() {
+                document.getElementById('kashaf-section').style.display = 'none';
+            }
+            // يمكنك الآن استدعاء showKashaf() أو hideKashaf() حسب الحاجة
+            // مثال افتراضي: إظهار الكشاف عند تحميل الصفحة
+            hideKashaf();
+            // ==========================
+            // نهاية دوال الكشاف
+            // ==========================
+    </script> 
+</body>
+</html>

@@ -1,0 +1,237 @@
+[
+  {
+  "value": 25,
+  "percent": "123%",
+    "decimal": 1.23
+  },
+  {
+  "value": 50,
+  "percent": "93%",
+    "decimal": 0.93
+  },
+  {
+  "value": 75,
+  "percent": "73%",
+    "decimal": 0.73
+  },
+  {
+  "value": 100,
+  "percent": "53%",
+    "decimal": 0.53
+  },
+  {
+  "value": 125,
+  "percent": "53%",
+    "decimal": 0.53
+  },
+  {
+  "value": 150,
+  "percent": "53%",
+    "decimal": 0.53
+  },
+  {
+  "value": 175,
+  "percent": "53%",
+    "decimal": 0.53
+  },
+  {
+  "value": 200,
+  "percent": "53%",
+    "decimal": 0.53
+  },
+  {
+  "value": 225,
+  "percent": "53%",
+    "decimal": 0.53
+  },
+  {
+  "value": 250,
+  "percent": "53%",
+    "decimal": 0.53
+  },
+  {
+  "value": 275,
+  "percent": "53%",
+    "decimal": 0.53
+  },
+  {
+  "value": 300,
+  "percent": "53%",
+    "decimal": 0.53
+  },
+  {
+  "value": 325,
+  "percent": "53%",
+    "decimal": 0.53
+  },
+  {
+  "value": 350,
+  "percent": "53%",
+    "decimal": 0.53
+  },
+  {
+  "value": 375,
+  "percent": "53%",
+    "decimal": 0.53
+  },
+  {
+  "value": 400,
+  "percent": "53%",
+    "decimal": 0.53
+  },
+  {
+  "value": 425,
+  "percent": "53%",
+    "decimal": 0.53
+  },
+  {
+  "value": 450,
+  "percent": "53%",
+    "decimal": 0.53
+  },
+  {
+  "value": 475,
+  "percent": "53%",
+    "decimal": 0.53
+  },
+  {
+  "value": 500,
+  "percent": "48%",
+    "decimal": 0.48
+  },
+  {
+  "value": 600,
+  "percent": "48%",
+    "decimal": 0.48
+  },
+  {
+  "value": 700,
+  "percent": "48%",
+    "decimal": 0.48
+  },
+  {
+  "value": 800,
+  "percent": "48%",
+    "decimal": 0.48
+  },
+  {
+  "value": 900,
+  "percent": "38%",
+    "decimal": 0.38
+  },
+  {
+  "value": 1000,
+  "percent": "38%",
+    "decimal": 0.38
+  },
+  {
+  "value": 1500,
+  "percent": "38%",
+    "decimal": 0.38
+  },
+  {
+  "value": 2000,
+  "percent": "38%",
+    "decimal": 0.38
+  },
+  {
+  "value": 2500,
+  "percent": "38%",
+    "decimal": 0.38
+  },
+  {
+  "value": 3000,
+  "percent": "38%",
+    "decimal": 0.38
+  },
+  {
+  "value": 3500,
+  "percent": "38%",
+    "decimal": 0.38
+  },
+  {
+  "value": 4000,
+  "percent": "33%",
+    "decimal": 0.33
+  },
+  {
+  "value": 4500,
+  "percent": "33%",
+    "decimal": 0.33
+  },
+  {
+  "value": 5000,
+  "percent": "33%",
+    "decimal": 0.33
+  },
+  {
+  "value": 5500,
+  "percent": "33%",
+    "decimal": 0.33
+  },
+  {
+  "value": 6000,
+  "percent": "28%",
+    "decimal": 0.28
+  },
+  {
+  "value": 6500,
+  "percent": "28%",
+    "decimal": 0.28
+  },
+  {
+  "value": 7000,
+  "percent": "28%",
+    "decimal": 0.28
+  },
+  {
+  "value": 7500,
+  "percent": "28%",
+    "decimal": 0.28
+  },
+  {
+  "value": 8000,
+  "percent": "25%",
+    "decimal": 0.25
+  },
+  {
+  "value": 8500,
+  "percent": "25%",
+    "decimal": 0.25
+  },
+  {
+  "value": 9000,
+  "percent": "25%",
+    "decimal": 0.25
+  },
+  {
+  "value": 9500,
+  "percent": "25%",
+    "decimal": 0.25
+  },
+  {
+  "value": 10000,
+  "percent": "24%",
+    "decimal": 0.24
+  },
+  {
+  "value": 20000,
+  "percent": "24%",
+    "decimal": 0.24
+  },
+  {
+  "value": 40000,
+  "percent": "24%",
+    "decimal": 0.24
+  },
+  {
+  "value": 80000,
+  "percent": "24%",
+    "decimal": 0.24
+  },
+  {
+  "value": 160000,
+    "النسبة المئوية": "24%",
+    "decimal": 0.24
+  }
+]

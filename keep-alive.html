@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إبقاء السيرفر نشطاً</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #328cc0 0%, #00bcd4 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-align: center;
+            direction: rtl;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 500px;
+            width: 90%;
+        }
+        h1 {
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        .status {
+            font-size: 1.4em;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        .status.online {
+            background: rgba(76, 175, 80, 0.8);
+            color: #fff;
+        }
+        .status.offline {
+            background: rgba(244, 67, 54, 0.8);
+            color: #fff;
+        }
+        .status.checking {
+            background: rgba(255, 152, 0, 0.8);
+            color: #fff;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .stat-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+        .stat-value {
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        .logs {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
+            direction: ltr;
+        }
+        .log-entry {
+            margin: 5px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        .success { color: #4caf50; }
+        .error { color: #f44336; }
+        .info { color: #2196f3; }
+        .warning { color: #ff9800; }
+        
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #fff;
+        }
+        .btn.start {
+            background: #4caf50;
+        }
+        .btn.stop {
+            background: #f44336;
+        }
+        .btn.test {
+            background: #2196f3;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 مراقب السيرفر النشط</h1>
+        
+        <div id="status" class="status checking">
+            جاري الفحص...
+        </div>
+        
+        <div class="controls">
+            <button class="btn start" onclick="startPing()">بدء المراقبة</button>
+            <button class="btn stop" onclick="stopPing()">إيقاف المراقبة</button>
+            <button class="btn test" onclick="testPing()">اختبار فوري</button>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-label">الوضع الحالي</div>
+                <div class="stat-value" id="currentStatus">متوقف</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">آخر ping</div>
+                <div class="stat-value" id="lastPing">-</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">النجح</div>
+                <div class="stat-value" id="successCount">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">الفشل</div>
+                <div class="stat-value" id="failCount">0</div>
+            </div>
+        </div>
+        
+        <div class="logs">
+            <div id="logContainer">
+                <div class="log-entry info">مراقب السيرفر جاهز للعمل...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // إعداد المتغيرات
+        const SERVER_URL = 'https://quick-o52m.onrender.com'; // ضع رابط السيرفر هنا
+        let pingInterval = null;
+        let isRunning = false;
+        let successCount = 0;
+        let failCount = 0;
+
+        // العناصر
+        const statusElement = document.getElementById('status');
+        const currentStatusElement = document.getElementById('currentStatus');
+        const lastPingElement = document.getElementById('lastPing');
+        const successCountElement = document.getElementById('successCount');
+        const failCountElement = document.getElementById('failCount');
+        const logContainer = document.getElementById('logContainer');
+
+        // دالة إضافة سجل
+        function addLog(message, type = 'info') {
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.textContent = `[${new Date().toLocaleTimeString('ar-SA')}] ${message}`;
+            
+            logContainer.appendChild(logEntry);
+            
+            // الحفاظ على آخر 50 سجل فقط
+            if (logContainer.children.length > 50) {
+                logContainer.removeChild(logContainer.firstChild);
+            }
+            
+            // التمرير لآخر سجل
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        // دالة ping واحدة
+        async function performPing() {
+            try {
+                addLog('إرسال ping إلى السيرفر...', 'info');
+                
+                const startTime = Date.now();
+                const response = await fetch(`${SERVER_URL}/ping`, {
+                    method: 'GET',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache'
+                    }
+                });
+                
+                const duration = Date.now() - startTime;
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    successCount++;
+                    successCountElement.textContent = successCount;
+                    lastPingElement.textContent = new Date().toLocaleTimeString('ar-SA');
+                    
+                    statusElement.textContent = '🟢 السيرفر متصل';
+                    statusElement.className = 'status online';
+                    currentStatusElement.textContent = 'متصل';
+                    
+                    addLog(`✅ ping ناجح - الاستجابة: ${duration}ms`, 'success');
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+            } catch (error) {
+                failCount++;
+                failCountElement.textContent = failCount;
+                
+                statusElement.textContent = '🔴 السيرفر غير متصل';
+                statusElement.className = 'status offline';
+                currentStatusElement.textContent = 'غير متصل';
+                
+                addLog(`❌ فشل ping: ${error.message}`, 'error');
+            }
+        }
+
+        // بدء المراقبة
+        function startPing() {
+            if (isRunning) {
+                addLog('المراقبة تعمل بالفعل', 'warning');
+                return;
+            }
+            
+            isRunning = true;
+            currentStatusElement.textContent = 'قيد التشغيل';
+            
+            // ping فوري
+            performPing();
+            
+            // إعداد المؤقت - كل دقيقتين (120000 مللي ثانية)
+            pingInterval = setInterval(performPing, 120000);
+            
+            addLog('🚀 بدأت المراقبة - ping كل دقيقتين', 'success');
+        }
+
+        // إيقاف المراقبة
+        function stopPing() {
+            if (!isRunning) {
+                addLog('المراقبة متوقفة بالفعل', 'warning');
+                return;
+            }
+            
+            isRunning = false;
+            clearInterval(pingInterval);
+            pingInterval = null;
+            
+            currentStatusElement.textContent = 'متوقف';
+            statusElement.textContent = '⏸️ المراقبة متوقفة';
+            statusElement.className = 'status checking';
+            
+            addLog('⏹️ تم إيقاف المراقبة', 'info');
+        }
+
+        // اختبار فوري
+        function testPing() {
+            addLog('🔍 اختبار فوري...', 'info');
+            performPing();
+        }
+
+        // بدء تلقائي عند تحميل الصفحة
+        window.addEventListener('load', () => {
+            addLog('تم تحميل مراقب السيرفر بنجاح', 'success');
+            
+            // بدء تلقائي بعد 3 ثوان
+            setTimeout(() => {
+                startPing();
+            }, 3000);
+        });
+
+        // إيقاف المراقبة عند إغلاق الصفحة
+        window.addEventListener('beforeunload', () => {
+            stopPing();
+        });
+    </script>
+</body>
+</html>
