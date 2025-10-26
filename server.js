@@ -12,12 +12,40 @@ const PORT = 3000;
 
 // إعداد الجلسة (session) لحماية الصفحات
 app.use(session({
-    secret: 'cpanel-otp-secret',
+    secret: process.env.SESSION_SECRET || 'cpanel-otp-secret',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 60 * 60 * 1000 } // ساعة واحدة
+    cookie: { 
+        maxAge: 60 * 60 * 1000, // ساعة واحدة
+        secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+        httpOnly: true, // منع الوصول عبر JavaScript
+        sameSite: 'strict' // حماية من CSRF
+    }
 }));
-app.use(express.json({ limit: '10mb' }));
+
+// حماية ضد الهجمات الشائعة
+const helmet = require('helmet');
+app.use(helmet());
+
+// Rate limiting لحماية من هجمات كسر كلمة المرور
+const rateLimit = require('express-rate-limit');
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 دقيقة
+    max: 5 // 5 محاولات كحد أقصى
+});
+app.use('/login', loginLimiter);
+
+app.use(express.json({ 
+    limit: '10mb',
+    verify: (req, res, buf) => {
+        // التحقق من صحة JSON
+        try {
+            JSON.parse(buf);
+        } catch(e) {
+            throw new Error('Invalid JSON');
+        }
+    }
+}));
 
 // حفظ بيانات المستخدمين في user-data.json
 app.post('/save-users', (req, res) => {

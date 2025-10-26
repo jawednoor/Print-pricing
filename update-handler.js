@@ -94,13 +94,40 @@ function handleServiceWorkerMessage(event) {
     
     if (!event.data) return;
     
-    // فحص إذا كان التطبيق مثبت - إظهار التحديثات فقط للتطبيقات المثبتة
-    if (!isAppInstalled()) {
-        console.log('App not installed - skipping update notification');
+    try {
+        // التحقق من مصدر الرسالة
+        if (!event.origin || !event.origin.startsWith(window.location.origin)) {
+            throw new Error('Rejected message from unauthorized source');
+        }
+        
+        // التحقق من صحة البيانات
+        if (typeof event.data !== 'object') {
+            throw new Error('Invalid message format');
+        }
+        
+        // فحص إذا كان التطبيق مثبت - إظهار التحديثات فقط للتطبيقات المثبتة
+        if (!isAppInstalled()) {
+            console.log('App not installed - skipping update notification');
+            return;
+        }
+        
+        // التحقق من وجود timestamp وصلاحيته
+        if (!event.data.timestamp || 
+            Date.now() - new Date(event.data.timestamp).getTime() > 5 * 60 * 1000) { // 5 دقائق كحد أقصى
+            throw new Error('Message timestamp invalid or expired');
+        }
+        
+        const { type, message, version, timestamp } = event.data;
+        
+        // دعم عدة أنواع من الرسائل من Service Worker
+        if (type === 'UPDATE_AVAILABLE' || type === 'UPDATE_READY' || type === 'UPDATE' || type === 'FORCE_RELOAD') {
+            // على بعض الأجهزة/متصفحات، قد نحتاج فقط لإظهار حوار للتحديث
+            promptSimpleUpdate(message || 'تحديث متوفر');
+        }
+    } catch (error) {
+        console.error('Error handling service worker message:', error);
         return;
     }
-    
-    const { type, message, version, timestamp } = event.data;
     
     // دعم عدة أنواع من الرسائل من Service Worker
     if (type === 'UPDATE_AVAILABLE' || type === 'UPDATE_READY' || type === 'UPDATE' || type === 'FORCE_RELOAD') {
