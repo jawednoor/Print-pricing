@@ -388,7 +388,7 @@
                         if ('Notification' in window && Notification.permission === 'granted') {
                             new Notification('مراقب السيرفر', {
                                 body: `✅ السيرفر يعمل بنجاح - فحص #${checkCount + 1}`,
-                                icon: 'logo-app_1.png',
+                                icon: 'img/logo-app_1.png',
                                 tag: 'server-check',
                                 silent: true
                             });
@@ -416,7 +416,7 @@
                     if ('Notification' in window && Notification.permission === 'granted') {
                         new Notification('تحذير - مراقب السيرفر', {
                             body: '❌ فشل الاتصال بالسيرفر!',
-                            icon: 'logo-app_1.png',
+                            icon: 'img/logo-app_1.png',
                             tag: 'server-error',
                             requireInteraction: true
                         });

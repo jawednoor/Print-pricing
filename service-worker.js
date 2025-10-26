@@ -78,7 +78,7 @@ self.addEventListener('activate', function(event) {
 // استرداد الملفات - دائماً جلب النسخة الجديدة للملفات المهمة
 self.addEventListener('fetch', function(event) {
   // الملفات المهمة التي نريد تحديثها دائماً
-  const importantFiles = ['manifest.json', 'logo-app_1.png', 'logo-albasmahart.png', 'index.html'];
+  const importantFiles = ['manifest.json', 'img/logo-app_1.png', 'img/logo-albasmahart.png', 'index.html'];
   const url = new URL(event.request.url);
   const isImportantFile = importantFiles.some(file => url.pathname.includes(file));
   
