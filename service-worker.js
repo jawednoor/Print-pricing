@@ -1,4 +1,4 @@
-const CACHE_NAME = 'basmahart-v9';
+const CACHE_NAME = 'basmahart-v10';
 const urlsToCache = [
   './',
   './index.html',
@@ -13,7 +13,7 @@ const urlsToCache = [
 
 // تثبيت service worker وحفظ الملفات في الكاش
 self.addEventListener('install', function(event) {
-  console.log('Service Worker installing... v9 - INSTALLED-ONLY UPDATES');
+  console.log('Service Worker installing... v10 - INSTALLED-ONLY UPDATES');
   // إجبار التنشيط الفوري بدون انتظار
   self.skipWaiting();
   
@@ -30,7 +30,7 @@ self.addEventListener('install', function(event) {
       // فتح كاش جديد تماماً
       return caches.open(CACHE_NAME);
     }).then(function(cache) {
-      console.log('Opened fresh cache v9');
+      console.log('Opened fresh cache v10');
       // إضافة الملفات الجديدة
       return cache.addAll(urlsToCache);
     })
@@ -39,11 +39,11 @@ self.addEventListener('install', function(event) {
 
 // تنشيط service worker
 self.addEventListener('activate', function(event) {
-  console.log('Service Worker activating... v9 - INSTALLED-ONLY UPDATES');
+  console.log('Service Worker activating... v10 - INSTALLED-ONLY UPDATES');
   event.waitUntil(
     // إجبار السيطرة على جميع التبويبات المفتوحة
     clients.claim().then(() => {
-      console.log('Service Worker v9 now controls all pages');
+      console.log('Service Worker v10 now controls all pages');
 
       // إرسال إشعار فوري ومباشر لجميع العملاء
       return clients.matchAll({includeUncontrolled: true, type: 'window'}).then(clientList => {
@@ -52,8 +52,8 @@ self.addEventListener('activate', function(event) {
           console.log('Sending notification to client', index);
           client.postMessage({
             type: 'UPDATE_AVAILABLE',
-            message: 'تحديث v9 متوفر - تحديثات للتطبيقات المثبتة فقط',
-            version: 'v9',
+            message: 'تحديث v10 متوفر - تحديثات للتطبيقات المثبتة فقط',
+            version: 'v10',
             forced: true,
             timestamp: new Date().toLocaleTimeString('ar-SA')
           });
