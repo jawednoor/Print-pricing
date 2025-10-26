@@ -4,9 +4,9 @@ const urlsToCache = [
   './index.html',
   './categories.html',
   './manifest.json',
-  './logo-app_1.png',
-  './logo-albasmahart.png',
-  './bg.gif',
+  './img/logo-app_1.png',
+  './img/logo-albasmahart.png',
+  './img/bg.gif',
   './user-data.json',
   './update-handler.js'
 ];
