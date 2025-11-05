@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>خدمة إبقاء السيرفر نشطاً</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .pulse-circle {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+        
+        .pulse-circle::before,
+        .pulse-circle::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            animation: pulse 2s ease-out infinite;
+        }
+        
+        .pulse-circle::after {
+            animation-delay: 1s;
+        }
+        
+        .pulse-circle .inner-circle {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            z-index: 10;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+        
+        .status {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .status.active {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .status.error {
+            color: #f44336;
+            font-weight: bold;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .info-box {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-label {
+            font-size: 0.85em;
+            color: #999;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .log-container {
+            background: #263238;
+            color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            direction: ltr;
+        }
+        
+        .log-entry {
+            margin-bottom: 8px;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        
+        .log-success {
+            color: #4caf50;
+        }
+        
+        .log-error {
+            color: #f44336;
+        }
+        
+        .log-info {
+            color: #2196f3;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        
+        .btn-home {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .btn-monitor {
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .stats {
+            font-size: 0.9em;
+            color: #999;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 1.6em;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="pulse-circle">
+            <div class="inner-circle">💓</div>
+        </div>
+        
+        <h1>خدمة Keep-Alive</h1>
+        <p class="status" id="status">جاري التشغيل...</p>
+        
+        <div class="info-grid">
+            <div class="info-box">
+                <div class="info-label">آخر Ping</div>
+                <div class="info-value" id="lastPing">--:--:--</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">عدد Pings</div>
+                <div class="info-value" id="pingCount">0</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">نجح</div>
+                <div class="info-value" id="successCount">0</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">فشل</div>
+                <div class="info-value" id="failCount">0</div>
+            </div>
+        </div>
+        
+        <div class="log-container" id="logContainer">
+            <div class="log-entry log-info">[INFO] خدمة Keep-Alive جاهزة...</div>
+        </div>
+        
+        <div class="button-group">
+            <button class="btn-home" onclick="location.href='index.html'">الصفحة الرئيسية</button>
+            <button class="btn-monitor" onclick="location.href='check-server.html'">مراقب السيرفر المتقدم</button>
+        </div>
+        
+        <div class="stats">
+            <p>🔄 Ping تلقائي كل 90 ثانية</p>
+            <p>⏱️ وقت التشغيل: <span id="uptime">00:00:00</span></p>
+        </div>
+    </div>
+
+    <script>
+        // المتغيرات
+        let pingCount = 0;
+        let successCount = 0;
+        let failCount = 0;
+        let startTime = Date.now();
+        
+        const SERVER_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
+        
+        // العناصر
+        const statusEl = document.getElementById('status');
+        const lastPingEl = document.getElementById('lastPing');
+        const pingCountEl = document.getElementById('pingCount');
+        const successCountEl = document.getElementById('successCount');
+        const failCountEl = document.getElementById('failCount');
+        const uptimeEl = document.getElementById('uptime');
+        const logContainer = document.getElementById('logContainer');
+        
+        // دالة إضافة سجل
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString('ar-SA');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(logEntry);
+            
+            // الحفاظ على آخر 30 سجل
+            if (logContainer.children.length > 30) {
+                logContainer.removeChild(logContainer.firstChild);
+            }
+            
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+        
+        // دالة تحديث وقت التشغيل
+        function updateUptime() {
+            const elapsed = Date.now() - startTime;
+            const hours = Math.floor(elapsed / (1000 * 60 * 60));
+            const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+            uptimeEl.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // دالة Ping
+        async function keepServerAlive() {
+            try {
+                const startTime = Date.now();
+                
+                const response = await fetch(`${SERVER_BASE}/ping`, {
+                    method: 'GET',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache'
+                    }
+                });
+                
+                const responseTime = Date.now() - startTime;
+                
+                if (response.ok) {
+                    successCount++;
+                    successCountEl.textContent = successCount;
+                    statusEl.textContent = '✅ السيرفر نشط ومتصل';
+                    statusEl.className = 'status active';
+                    
+                    addLog(`✓ Ping ناجح (${responseTime}ms)`, 'success');
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+            } catch (error) {
+                failCount++;
+                failCountEl.textContent = failCount;
+                statusEl.textContent = '❌ فشل الاتصال بالسيرفر';
+                statusEl.className = 'status error';
+                
+                addLog(`✗ فشل Ping: ${error.message}`, 'error');
+            } finally {
+                pingCount++;
+                pingCountEl.textContent = pingCount;
+                lastPingEl.textContent = new Date().toLocaleTimeString('ar-SA');
+            }
+        }
+        
+        // تسجيل Service Worker
+        async function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    await navigator.serviceWorker.register('service-worker.js');
+                    addLog('Service Worker مسجل بنجاح', 'info');
+                } catch (error) {
+                    addLog('فشل تسجيل Service Worker', 'error');
+                }
+            }
+        }
+        
+        // بدء التشغيل
+        window.addEventListener('load', async function() {
+            addLog('خدمة Keep-Alive بدأت العمل', 'success');
+            
+            // تسجيل Service Worker
+            await registerServiceWorker();
+            
+            // بدء عداد وقت التشغيل
+            setInterval(updateUptime, 1000);
+            
+            // Ping فوري بعد 5 ثوان
+            setTimeout(() => {
+                keepServerAlive();
+                addLog('بدء Ping التلقائي كل 90 ثانية', 'info');
+            }, 5000);
+            
+            // Ping دوري كل 90 ثانية
+            setInterval(keepServerAlive, 90000);
+        });
+        
+        // منع إغلاق الصفحة
+        window.addEventListener('beforeunload', function(e) {
+            e.preventDefault();
+            e.returnValue = 'خدمة Keep-Alive نشطة. هل تريد إغلاقها؟';
+            return e.returnValue;
+        });
+        
+        // إشعار عند إخفاء الصفحة
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                addLog('الصفحة مخفية - الخدمة مستمرة', 'info');
+            } else {
+                addLog('عودة للصفحة - الخدمة نشطة', 'info');
+            }
+        });
+    </script>
+</body>
+</html>
