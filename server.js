@@ -25,7 +25,9 @@ app.use(session({
 
 // حماية ضد الهجمات الشائعة
 const helmet = require('helmet');
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: false, // تعطيل CSP للسماح بالسكريبتات المضمنة
+}));
 
 // Rate limiting لحماية من هجمات كسر كلمة المرور
 const rateLimit = require('express-rate-limit');
@@ -120,7 +122,9 @@ app.post('/login', (req, res) => {
         }
         res.status(401).json({ success: false, message: `رمز التحقق غير صحيح. تبقى ${3 - failedCount} محاولة قبل الحظر.` });
     }
-// ميدل وير حماية صفحات لوحة التحكم
+});
+
+// ميدل وار حماية صفحات لوحة التحكم
 function requireLogin(req, res, next) {
     if (req.session && req.session.isLoggedIn) {
         next();
@@ -131,7 +135,6 @@ function requireLogin(req, res, next) {
 
 // حماية صفحات لوحة التحكم
 app.use(['/values.html', '/users-table.html', '/settings.html', '/papers.html'], requireLogin, express.static(__dirname));
-});
 
 // -----------------------------
 
