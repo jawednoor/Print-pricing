@@ -265,7 +265,18 @@ app.get('/settings.json', (req, res) => {
             return res.json({});
         }
         try {
-            res.json(JSON.parse(data));
+            const settings = JSON.parse(data);
+            // تحويل القيم من عشرية إلى نسبة مئوية للعرض
+            if (settings.invoicePercent !== undefined) {
+                settings.invoicePercent = settings.invoicePercent * 100;
+            }
+            if (settings.letterPercent !== undefined) {
+                settings.letterPercent = settings.letterPercent * 100;
+            }
+            if (settings.vat !== undefined) {
+                settings.vat = settings.vat * 100;
+            }
+            res.json(settings);
         } catch (e) {
             res.json({});
         }
@@ -274,6 +285,18 @@ app.get('/settings.json', (req, res) => {
 // حفظ الإعدادات الثابتة في ملف settings.json
 app.post('/save-settings', (req, res) => {
     const settings = req.body;
+    
+    // تحويل النسب المئوية إلى قيم عشرية قبل الحفظ
+    if (settings.invoicePercent !== undefined) {
+        settings.invoicePercent = parseFloat(settings.invoicePercent) / 100;
+    }
+    if (settings.letterPercent !== undefined) {
+        settings.letterPercent = parseFloat(settings.letterPercent) / 100;
+    }
+    if (settings.vat !== undefined) {
+        settings.vat = parseFloat(settings.vat) / 100;
+    }
+    
     const filePath = path.join(__dirname, 'settings.json');
     fs.writeFile(filePath, JSON.stringify(settings, null, 2), 'utf8', err => {
         if (err) {
