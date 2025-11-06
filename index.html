@@ -116,6 +116,39 @@
 			box-shadow: 0 2px 8px #328cc033;
 			transition: background 0.2s;
 		}
+		
+		/* شاشات الكمبيوتر 10 بوصة والأكبر */
+		@media (min-width: 768px) {
+			.login-container {
+				max-width: 500px;
+				min-height: auto;
+				height: auto;
+				padding: 40px 30px;
+				border-radius: 18px;
+				box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+			}
+			.logo {
+				width: 130px;
+				margin-bottom: 24px;
+			}
+			h2 {
+				font-size: 2em;
+				margin-bottom: 24px;
+			}
+			input[type="text"], input[type="password"] {
+				font-size: 1.3em;
+				height: 60px;
+				padding: 20px;
+				margin-bottom: 20px;
+			}
+			.login-btn {
+				font-size: 1.3em;
+				padding: 16px;
+				margin-top: 12px;
+			}
+		}
+		
+		/* شاشات الجوال الطولي */
 		@media (max-width: 600px) {
 			body {
 				align-items: flex-start;
