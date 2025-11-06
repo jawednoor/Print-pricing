@@ -128,12 +128,6 @@ function handleServiceWorkerMessage(event) {
         console.error('Error handling service worker message:', error);
         return;
     }
-    
-    // دعم عدة أنواع من الرسائل من Service Worker
-    if (type === 'UPDATE_AVAILABLE' || type === 'UPDATE_READY' || type === 'UPDATE' || type === 'FORCE_RELOAD') {
-        // على بعض الأجهزة/متصفحات، قد نحتاج فقط لإظهار حوار للتحديث
-        promptSimpleUpdate(message || 'تحديث متوفر');
-    }
 }
 
 function promptUserToUpdate(registration) {

@@ -3,11 +3,20 @@ const urlsToCache = [
   './',
   './index.html',
   './categories.html',
+  './books-magazines.html',
+  './brochures-stickers.html',
+  './letters-memos.html',
+  './envelopes.html',
+  './invoices.html',
   './manifest.json',
   './img/logo-app_1.png',
   './img/logo-albasmahart.png',
+  './img/logo-albasmahart2.png',
   './img/bg.gif',
   './user-data.json',
+  './papers.json',
+  './settings.json',
+  './values.json',
   './update-handler.js'
 ];
 
