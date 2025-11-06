@@ -9,13 +9,11 @@
                             📦 الملفات المُنشأة
 ================================================================================
 
-1️⃣  السكريبتات الرئيسية:
-    ✅ generate-otp.js          - توليد رمز OTP الحالي
-    ✅ encrypt-doc.js           - تشفير يدوي (يطلب رمز OTP)
-    ✅ encrypt-auto.js          - تشفير تلقائي (يولد الرمز تلقائياً)
-    ✅ decrypt-doc.js           - فك تشفير يدوي (يطلب رمز OTP)
-    ✅ decrypt-auto.js          - فك تشفير تلقائي (يستخدم الرمز الحالي)
-    ✅ decrypt-emergency.js     - فك تشفير طوارئ (يستخدم الرمز المحفوظ)
+1️⃣  النظام المدمج في server.js:
+    ✅ GET /generate-otp           - توليد رمز OTP الحالي
+    ✅ POST /encrypt-doc           - تشفير الملف
+    ✅ POST /decrypt-doc           - فك تشفير الملف
+    ✅ encryption-manager.html     - واجهة ويب كاملة
 
 2️⃣  التوثيق:
     ✅ README-ENCRYPTION.md     - دليل شامل كامل (400+ سطر)
@@ -48,20 +46,21 @@ OTP Secret:          JBSWY3DPEHPK3PXP
                         🚀 الاستخدام السريع
 ================================================================================
 
-🔍 معرفة الرمز الحالي:
-   node generate-otp.js
+🌐 الطريقة الأسهل (واجهة الويب):
+   1. node server.js
+   2. افتح: http://localhost:3000/encryption-manager.html
+   3. استخدم الأزرار لتشفير/فك التشفير!
 
-🔒 تشفير الملف:
-   node encrypt-auto.js
+📡 عبر API:
+   GET  /generate-otp  - معرفة الرمز الحالي
+   POST /encrypt-doc   - تشفير الملف
+   POST /decrypt-doc   - فك التشفير
 
-🔓 فك التشفير:
-   node decrypt-doc.js
-   (سيطلب منك رمز Google Authenticator)
-
-📖 قراءة الملف:
-   node decrypt-doc.js
-   notepad مراجعة.txt.decrypted
-   del مراجعة.txt.decrypted
+🔐 مثال API:
+   curl http://localhost:3000/generate-otp
+   curl -X POST http://localhost:3000/decrypt-doc \
+     -H "Content-Type: application/json" \
+     -d '{"otpCode":"123456"}'
 
 ================================================================================
                         ✅ الاختبارات المُنجزة
