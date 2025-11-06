@@ -157,6 +157,11 @@
         </div>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script>
+    // التحقق من تسجيل الدخول
+    if (localStorage.getItem('loggedIn') !== 'true') {
+        window.location.href = 'cpanel.html';
+    }
+    
     // دالة تعبئة الجدول من بيانات JSON
     function fillTableFromJson(data) {
         const tbody = document.getElementById('sheetTable').getElementsByTagName('tbody')[0];

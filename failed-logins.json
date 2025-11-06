@@ -1,7 +1,7 @@
 {
   "admin": {
-    "failedCount": 3,
-    "lastFailed": "2025-09-19T13:41:42.429Z",
-    "lockUntil": 1758332502429
+    "failedCount": 0,
+    "lastFailed": null,
+    "lockUntil": null
   }
 }

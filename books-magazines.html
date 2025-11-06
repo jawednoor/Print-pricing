@@ -1435,10 +1435,11 @@
         // ==========================
         // تعطيل console.log في بيئة الإنتاج فقط (ليس على localhost)
         // ==========================
-        //  
+        
         if (typeof console !== "undefined" && window.location.hostname !== "localhost") {
-            console.log = function () {};
+           console.log = function () {};
         }
+        
         //=========================================
         // نهاية كود تعطيل console.log
         //=========================================

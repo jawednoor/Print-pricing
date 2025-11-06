@@ -4,6 +4,10 @@
   "invoicePercent": 0.2,
   "letterPercent": 0.45,
   "printPrice": 0.12,
+  "cuttingPrice": 0.15,
+  "breakingPrice": 0.1,
+  "pocketWhitePrice":0.5,
+  "pocketPrintedPrice": 1,
   "vat": 0.15,
   "invoicePaperPrice": 150
 }

@@ -57,6 +57,10 @@
                 body: JSON.stringify({ username, password })
             });
             if (res.ok) {
+                // حفظ حالة تسجيل الدخول في localStorage
+                localStorage.setItem('loggedIn', 'true');
+                localStorage.setItem('username', username);
+                
                 document.getElementById('login-section').style.display = 'none';
                 document.getElementById('cpanel-section').style.display = 'block';
             } else {

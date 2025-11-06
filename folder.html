@@ -668,13 +668,9 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="B4_5">عدد القصات الداخلية</label>
-                <input type="number" id="B4_5" name="B4_5" min="0" placeholder="0" value="0">
-            </div>
-            <div class="form-group">
-                <label for="B5">عدد الطيات</label>
+                <label for="B5">نوع الجيب</label>
                 <select id="B5" name="B5">
-                    <option value="">اختر عدد الطيات</option>
+                    <option value="">اختر نوع الجيب</option>
                 </select>
             </div>
             <div class="form-group">
@@ -725,7 +721,7 @@
                             <span id="C4" style="display:inline-block;width:120px;height:48px;line-height:48px;text-align:center;background:#fff;border:1px solid #bbb;border-radius:8px;font-weight:bold;">C4</span>
                         </li>
                         <li style="display:block;margin:6px 0;">
-                            <span style="display:inline-block;margin-left:8px;color:#328cc0;font-weight:bold;">سعر الطيات: c5</span>
+                            <span style="display:inline-block;margin-left:8px;color:#328cc0;font-weight:bold;">سعر الجيوب: c5</span>
                             <span id="C5" style="display:inline-block;width:120px;height:48px;line-height:48px;text-align:center;background:#fff;border:1px solid #bbb;border-radius:8px;font-weight:bold;">C5</span>
                         </li>
                         <li style="display:block;margin:6px 0;">
@@ -766,14 +762,21 @@
         </div>
     </form>
     <script>
-        // تعبئة قائمة عدد الطيات من 1 إلى 10
+        // تعبئة قائمة B5 بخيارات الجيوب
         const foldsSelect = document.getElementById('B5');
-        for(let i=0; i<=10; i++){
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = i;
-            foldsSelect.appendChild(option);
-        }
+        const pocketOptions = [
+            'عدد 1 جيب أبيض',
+            'عدد 2 جيب أبيض',
+            'عدد 1 جيب مطبوع',
+            'عدد 2 جيب مطبوع'
+        ];
+        pocketOptions.forEach(option => {
+            const optionElement = document.createElement('option');
+            optionElement.value = option;
+            optionElement.textContent = option;
+            foldsSelect.appendChild(optionElement);
+        });
+        
         // تعبئة قائمة نوع الورق الداخلي من السيرفر (نفس منطق الكتب)
         fetch('/inner-paper-types')
             .then(res => res.json())
@@ -958,46 +961,29 @@
 
 
         // ==========================
-        // قاعدة C5 (حساب عدد الطيات + القصات)
+        // قاعدة C5 (حساب سعر الجيوب)
         // ==========================
 
         // دالة لحساب قيمة C5 حسب القاعدة المطلوبة  
-        function getC5Value(b1, b5, b4_5, breakingPrice, cuttingPrice) {
-            b5 = parseFloat(b5);
-            b4_5 = parseFloat(b4_5);
-            if (isNaN(b5)) b5 = 0;
-            if (isNaN(b4_5)) b4_5 = 0;
+        function getC5Value(b5, pocketWhitePrice, pocketPrintedPrice) {
+            // فحص نوع الجيب المختار
+            if (b5 === "عدد 1 جيب أبيض") return pocketWhitePrice * 1;
+            if (b5 === "عدد 2 جيب أبيض") return pocketWhitePrice * 2;
+            if (b5 === "عدد 1 جيب مطبوع") return pocketPrintedPrice * 1;
+            if (b5 === "عدد 2 جيب مطبوع") return pocketPrintedPrice * 2;
             
-            // حساب الطيات
-            let foldingCost = 0;
-            if (b1 === "A3") foldingCost = b5 * breakingPrice;
-            if (b1 === "A4") foldingCost = b5 * breakingPrice / 2;
-            if (b1 === "A5") foldingCost = b5 * breakingPrice / 4;
-            if (b1 === "A6") foldingCost = b5 * breakingPrice / 8;
-            if (b1 === "A7") foldingCost = b5 * breakingPrice / 16;
-            
-            // حساب القصات
-            let cuttingCost = 0;
-            if (b1 === "A3") cuttingCost = b4_5 * cuttingPrice;
-            if (b1 === "A4") cuttingCost = b4_5 * cuttingPrice / 2;
-            if (b1 === "A5") cuttingCost = b4_5 * cuttingPrice / 4;
-            if (b1 === "A6") cuttingCost = b4_5 * cuttingPrice / 8;
-            if (b1 === "A7") cuttingCost = b4_5 * cuttingPrice / 16;
-            
-            return foldingCost + cuttingCost;
+            return 0;
         }
 
-        // تحديث قيمة C5 عند تغيير B1 أو B5 أو B4_5
+        // تحديث قيمة C5 عند تغيير B5
         function updateC5() {
-            var b1 = document.getElementById('B1');
             var b5 = document.getElementById('B5');
-            var b4_5 = document.getElementById('B4_5');
             var c5 = document.getElementById('C5');
-            if (!b1 || !b5 || !b4_5 || !c5) return;
+            if (!b5 || !c5) return;
             fetch('/settings.json')
                 .then(res => res.json())
                 .then(settings => {
-                    var val = getC5Value(b1.value, b5.value, b4_5.value, settings.breakingPrice, settings.cuttingPrice);
+                    var val = getC5Value(b5.value, settings.pocketWhitePrice, settings.pocketPrintedPrice);
                     c5.textContent = (typeof formatNumber !== 'undefined') ? formatNumber(val, 2) : val;
                 })
                 .catch(function() {
@@ -1005,15 +991,11 @@
                 });
         }
 
-        // ربط تحديث C5 عند تغيير B1 أو B5 أو B4_5
+        // ربط تحديث C5 عند تغيير B5
         document.addEventListener('DOMContentLoaded', function() {
-            var b1 = document.getElementById('B1');
             var b5 = document.getElementById('B5');
-            var b4_5 = document.getElementById('B4_5');
-            if (b1 && b5 && b4_5) {
-            b1.addEventListener('change', updateC5);
+            if (b5) {
             b5.addEventListener('change', updateC5);
-            b4_5.addEventListener('input', updateC5);
             updateC5();
             }
         });
@@ -1277,14 +1259,14 @@
                 { id: 'B2', name: 'نوع الورق' },
                 { id: 'B3', name: 'نوع الطباعة' },
                 { id: 'B4', name: 'السلوفان' },
-                { id: 'B5', name: 'عدد الطيات' },
+                { id: 'B5', name: 'نوع الجيب' },
                 { id: 'B6', name: 'الكمية' }
             ];
             var emptyFields = [];
             requiredFields.forEach(function(field) {
                 var el = document.getElementById(field.id);
                 var val = (el && (el.value !== undefined ? el.value : el.textContent));
-                if (!val || val === '' || val === 'اختر' || val === 'اختر نوع الورق ' || val === 'اختر نوع الطباعة' || val === 'اختر عدد الطيات') {
+                if (!val || val === '' || val === 'اختر' || val === 'اختر نوع الورق ' || val === 'اختر نوع الطباعة' || val === 'اختر نوع الجيب') {
                     emptyFields.push(field.name);
                     if (el) el.style.borderColor = '#d32f2f';
                 } else {
@@ -1384,7 +1366,7 @@
             }
             // يمكنك الآن استدعاء showKashaf() أو hideKashaf() حسب الحاجة
             // مثال افتراضي: إظهار الكشاف عند تحميل الصفحة
-            hideKashaf();
+            showKashaf();
             // ==========================
             // نهاية دوال الكشاف
             // ==========================

@@ -266,7 +266,25 @@ app.get('/settings.json', (req, res) => {
         }
         try {
             const settings = JSON.parse(data);
-            // تحويل القيم من عشرية إلى نسبة مئوية للعرض
+            // إرسال البيانات كما هي (بدون تحويل)
+            // التحويل للنسبة المئوية يتم فقط في صفحة الإعدادات عبر /settings-display
+            res.json(settings);
+        } catch (e) {
+            res.json({});
+        }
+    });
+});
+
+// عرض الإعدادات للعرض في صفحة settings.html (مع تحويل للنسبة المئوية)
+app.get('/settings-display', (req, res) => {
+    const filePath = path.join(__dirname, 'settings.json');
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+            return res.json({});
+        }
+        try {
+            const settings = JSON.parse(data);
+            // تحويل القيم من عشرية إلى نسبة مئوية للعرض في صفحة الإعدادات فقط
             if (settings.invoicePercent !== undefined) {
                 settings.invoicePercent = settings.invoicePercent * 100;
             }
@@ -296,6 +314,19 @@ app.post('/save-settings', (req, res) => {
     if (settings.vat !== undefined) {
         settings.vat = parseFloat(settings.vat) / 100;
     }
+    
+    // التأكد من وجود جميع الحقول المطلوبة
+    const requiredFields = [
+        'slefanBigMatte', 'slefanBigGlossy', 'invoicePercent', 'letterPercent',
+        'printPrice', 'cuttingPrice', 'breakingPrice', 'pocketWhitePrice',
+        'pocketPrintedPrice', 'vat', 'invoicePaperPrice'
+    ];
+    
+    requiredFields.forEach(field => {
+        if (settings[field] === undefined || isNaN(settings[field])) {
+            settings[field] = 0;
+        }
+    });
     
     const filePath = path.join(__dirname, 'settings.json');
     fs.writeFile(filePath, JSON.stringify(settings, null, 2), 'utf8', err => {

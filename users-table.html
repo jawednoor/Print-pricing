@@ -104,6 +104,11 @@
     <button class="add-btn" style="background:linear-gradient(90deg,#328cc0 0%,#4caf50 100%);margin-right:8px;" onclick="window.history.back()">رجوع للصفحة السابقة</button>
     </div>
     <script>
+    // التحقق من تسجيل الدخول
+    if (localStorage.getItem('loggedIn') !== 'true') {
+        window.location.href = 'cpanel.html';
+    }
+    
     let users = [];
 
     // جلب بيانات المستخدمين من السيرفر عند فتح الصفحة

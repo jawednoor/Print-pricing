@@ -120,14 +120,34 @@
                 <input type="number" id="printPrice" name="printPrice" step="any" required>
             </div>
             <div class="form-group">
+                <label for="cuttingPrice">سعر القص</label>
+                <input type="number" id="cuttingPrice" name="cuttingPrice" step="any" required>
+            </div>
+            <div class="form-group">
+                <label for="breakingPrice">سعر التكسير</label>
+                <input type="number" id="breakingPrice" name="breakingPrice" step="any" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="pocketWhitePrice">سعر جيب أبيض</label>
+                <input type="number" id="pocketWhitePrice" name="pocketWhitePrice" step="any" required>
+            </div>
+            <div class="form-group">
+                <label for="pocketPrintedPrice">سعر جيب مطبوع</label>
+                <input type="number" id="pocketPrintedPrice" name="pocketPrintedPrice" step="any" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
                 <label for="invoicePaperPrice">سعر ورق الفاتورة</label>
                 <input type="number" id="invoicePaperPrice" name="invoicePaperPrice" step="any" required>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="vat">ضريبة القيمة المضافة</label>
-            <div class="input-with-unit">
-                <input type="number" id="vat" name="vat" step="any" required>
+            <div class="form-group">
+                <label for="vat">ضريبة القيمة المضافة</label>
+                <div class="input-with-unit">
+                    <input type="number" id="vat" name="vat" step="any" required>
+                </div>
             </div>
         </div>
         <button type="submit">حفظ</button>
@@ -135,8 +155,13 @@
     <button type="button" style="margin-right:10px;background: linear-gradient(90deg,#328cc0 0%,#4caf50 100%);color:#fff;border:none;border-radius:8px;padding:12px 28px;font-size:1.1em;font-weight:bold;cursor:pointer;box-shadow:0 2px 8px #328cc033;" onclick="window.history.back()">رجوع للصفحة السابقة</button>
     </form>
     <script>
-        // جلب القيم من settings.json وعرضها في النموذج
-    fetch('/settings.json')
+        // التحقق من تسجيل الدخول
+        if (localStorage.getItem('loggedIn') !== 'true') {
+            window.location.href = 'cpanel.html';
+        }
+        
+        // جلب القيم من settings-display وعرضها في النموذج (مع تحويل النسب المئوية)
+    fetch('/settings-display')
             .then(res => res.json())
             .then(data => {
                 if (data) {
@@ -145,6 +170,10 @@
                     document.getElementById('invoicePercent').value = data.invoicePercent || '';
                     document.getElementById('letterPercent').value = data.letterPercent || '';
                     document.getElementById('printPrice').value = data.printPrice || '';
+                    document.getElementById('cuttingPrice').value = data.cuttingPrice || '';
+                    document.getElementById('breakingPrice').value = data.breakingPrice || '';
+                    document.getElementById('pocketWhitePrice').value = data.pocketWhitePrice || '';
+                    document.getElementById('pocketPrintedPrice').value = data.pocketPrintedPrice || '';
                     document.getElementById('vat').value = data.vat || '';
                     document.getElementById('invoicePaperPrice').value = data.invoicePaperPrice || '';
                 }
@@ -158,6 +187,10 @@
                 invoicePercent: parseFloat(document.getElementById('invoicePercent').value),
                 letterPercent: parseFloat(document.getElementById('letterPercent').value),
                 printPrice: parseFloat(document.getElementById('printPrice').value),
+                cuttingPrice: parseFloat(document.getElementById('cuttingPrice').value),
+                breakingPrice: parseFloat(document.getElementById('breakingPrice').value),
+                pocketWhitePrice: parseFloat(document.getElementById('pocketWhitePrice').value),
+                pocketPrintedPrice: parseFloat(document.getElementById('pocketPrintedPrice').value),
                 vat: parseFloat(document.getElementById('vat').value),
                 invoicePaperPrice: parseFloat(document.getElementById('invoicePaperPrice').value)
             };

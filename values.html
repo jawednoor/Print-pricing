@@ -77,6 +77,11 @@
     </table>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script>
+    // التحقق من تسجيل الدخول
+    if (localStorage.getItem('loggedIn') !== 'true') {
+        window.location.href = 'cpanel.html';
+    }
+    
     // دالة زيادة النسبة المئوية لكل الصفوف
     function increasePercentAll() {
         const increase = parseFloat(document.getElementById('increasePercent').value);
