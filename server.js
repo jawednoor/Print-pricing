@@ -37,6 +37,18 @@ const loginLimiter = rateLimit({
 });
 app.use('/login', loginLimiter);
 
+// إعدادات CORS لجميع المسارات
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
+});
+
+// معالجة JSON
 app.use(express.json({ 
     limit: '10mb',
     verify: (req, res, buf) => {
@@ -271,19 +283,6 @@ app.post('/save-settings', (req, res) => {
     });
 });
 
-// إعدادات CORS بشكل يدوي لجميع المسارات
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    if (req.method === 'OPTIONS') {
-        return res.sendStatus(200);
-    }
-    next();
-});
-app.use(express.json({ limit: '10mb' }));
-app.use(express.static(__dirname));
-
 // إضافة endpoint للـ health check وإبقاء السيرفر نشطاً
 app.get('/health', (req, res) => {
     res.status(200).json({ 
@@ -325,6 +324,9 @@ const keepAlive = () => {
         req.end();
     }, 90000); // كل دقيقة ونصف (90 ثانية)
 };
+
+// خدمة الملفات الثابتة (يجب أن تكون في النهاية)
+app.use(express.static(__dirname));
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
