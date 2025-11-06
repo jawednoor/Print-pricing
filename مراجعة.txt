@@ -141,6 +141,344 @@ Frontend:
    🔔 توصية: استخدام bcrypt لتشفير كلمات المرور
 
 ================================================================================
+                🔐 المصادقة المزدوجة: cpanel.html vs index.html
+================================================================================
+
+نظام المصادقة في التطبيق:
+------------------------
+يستخدم النظام بوابتين منفصلتين للدخول:
+1. index.html - للموظفين العاديين (استخدام يومي)
+2. cpanel.html - للمدير فقط (إدارة النظام)
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     جدول المقارنة الشامل                               │
+├──────────────────┬──────────────────────┬─────────────────────────────┤
+│     الميزة       │    index.html        │      cpanel.html            │
+├──────────────────┼──────────────────────┼─────────────────────────────┤
+│ الهدف            │ تسجيل دخول الموظفين  │ تسجيل دخول المدير           │
+│ نوع المصادقة     │ Plain Text (JSON)    │ OTP (Google Authenticator)  │
+│ عدد المستخدمين   │ متعدد (3+)           │ واحد فقط (admin)            │
+│ مستوى الأمان     │ منخفض ⭐            │ عالي جداً ⭐⭐⭐⭐⭐        │
+│ مكان التحقق      │ Client-side          │ Server-side                 │
+│ مصدر البيانات    │ user-data.json       │ server.js (OTP_SECRET)      │
+│ Brute Force      │ ❌ لا يوجد          │ ✅ نعم (3 محاولات)         │
+│ مدة الحظر        │ -                    │ 12 ساعة                     │
+│ الجلسات          │ localStorage         │ express-session             │
+│ الصفحة التالية   │ categories.html      │ لوحة التحكم (4 أزرار)      │
+│ PWA Support      │ ✅ كامل             │ ❌ لا                       │
+│ Service Worker   │ ✅ نعم              │ ❌ لا                       │
+│ زر التثبيت       │ ✅ نعم              │ ❌ لا                       │
+│ Keep-Alive       │ كل 3 دقائق           │ كل 5 دقائق                  │
+│ Auto-complete    │ ✅ نعم              │ ❌ لا                       │
+│ التصميم          │ Gradient + GIF       │ بسيط وواضح                  │
+└──────────────────┴──────────────────────┴─────────────────────────────┘
+
+تفاصيل المصادقة في index.html:
+-------------------------------
+```javascript
+// قراءة من ملف JSON على المتصفح (client-side)
+const res = await fetch('/user-data.json');
+const users = await res.json();
+const found = users.find(u => 
+    u.username === username && 
+    u.password === password
+);
+
+if (found) {
+    localStorage.setItem('loggedIn', 'true');
+    localStorage.setItem('username', username);
+    window.location.href = 'categories.html';
+} else {
+    alert('اسم المستخدم أو كلمة المرور غير صحيحة!');
+}
+```
+
+**نقاط القوة:**
+✅ سريع وسهل الاستخدام
+✅ يعمل بدون اتصال (PWA)
+✅ لا يحتاج لخادم للتحقق
+
+**نقاط الضعف:**
+❌ كلمات المرور مكشوفة في JSON
+❌ يمكن تجاوز المصادقة من Developer Tools
+❌ لا توجد حماية من Brute Force
+❌ البيانات قابلة للقراءة من أي شخص
+
+تفاصيل المصادقة في cpanel.html:
+--------------------------------
+```javascript
+// إرسال إلى السيرفر (server-side)
+const res = await fetch('/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password })
+});
+
+if (res.ok) {
+    // إخفاء نموذج الدخول
+    document.getElementById('login-section').style.display = 'none';
+    // إظهار لوحة التحكم
+    document.getElementById('cpanel-section').style.display = 'block';
+} else {
+    const data = await res.json();
+    errorDiv.textContent = data.message;
+    errorDiv.style.display = 'block';
+}
+```
+
+**المعالجة في server.js:**
+```javascript
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    
+    // 1. التحقق من اسم المستخدم (admin فقط)
+    if (username !== 'admin') {
+        return res.status(401).json({ 
+            success: false, 
+            message: 'اسم المستخدم غير صحيح' 
+        });
+    }
+
+    // 2. فحص الحظر (Brute Force Protection)
+    const failedFile = path.join(__dirname, 'failed-logins.json');
+    let failedData = JSON.parse(fs.readFileSync(failedFile, 'utf8'));
+    const now = Date.now();
+    const userFail = failedData[username] || { 
+        failedCount: 0, 
+        lastFailed: null, 
+        lockUntil: null 
+    };
+
+    // تحقق من وجود حظر
+    if (userFail.lockUntil && now < userFail.lockUntil) {
+        const remaining = Math.ceil((userFail.lockUntil - now) / 60000);
+        return res.status(403).json({ 
+            message: `تم حظر الحساب مؤقتاً. حاول بعد ${remaining} دقيقة.` 
+        });
+    }
+
+    // 3. التحقق من رمز OTP (Google Authenticator)
+    const isValid = authenticator.check(password, OTP_SECRET);
+    
+    if (isValid) {
+        // ✅ نجح الدخول
+        req.session.isLoggedIn = true;
+        // إعادة تعيين عداد المحاولات الفاشلة
+        failedData[username] = { 
+            failedCount: 0, 
+            lastFailed: null, 
+            lockUntil: null 
+        };
+        fs.writeFileSync(failedFile, JSON.stringify(failedData, null, 2));
+        res.json({ success: true });
+    } else {
+        // ❌ فشل الدخول - زيادة العداد
+        let failedCount = (userFail.failedCount || 0) + 1;
+        let lockUntil = null;
+        
+        if (failedCount >= 3) {
+            lockUntil = now + (12 * 60 * 60 * 1000); // حظر 12 ساعة
+        }
+        
+        failedData[username] = { 
+            failedCount, 
+            lastFailed: new Date(now).toISOString(), 
+            lockUntil 
+        };
+        fs.writeFileSync(failedFile, JSON.stringify(failedData, null, 2));
+        
+        if (lockUntil) {
+            return res.status(403).json({ 
+                message: 'تم حظر الحساب مؤقتاً لمدة 12 ساعة.' 
+            });
+        }
+        
+        res.status(401).json({ 
+            message: `رمز التحقق غير صحيح. تبقى ${3 - failedCount} محاولة.` 
+        });
+    }
+});
+```
+
+**نقاط القوة:**
+✅ OTP (TOTP) - رموز ديناميكية تتغير كل 30 ثانية
+✅ حماية قوية من Brute Force (حظر 12 ساعة)
+✅ المصادقة على السيرفر (server-side)
+✅ جلسات آمنة (express-session)
+✅ تتبع المحاولات الفاشلة في ملف
+
+**نقاط الضعف المحتملة:**
+⚠️ OTP_SECRET مخزن في server.js (يجب في .env)
+⚠️ لا يوجد HTTPS في التطوير
+
+نظام Google Authenticator (OTP):
+---------------------------------
+**ما هو OTP؟**
+- Time-based One-Time Password (TOTP)
+- رمز مكون من 6 أرقام
+- يتغير تلقائياً كل 30 ثانية
+- يُنشأ من OTP_SECRET + الوقت الحالي
+
+**كيفية الإعداد:**
+1. تثبيت Google Authenticator على الهاتف
+2. مسح QR Code أو إدخال OTP_SECRET يدوياً
+3. التطبيق يُولّد رموز جديدة كل 30 ثانية
+4. إدخال الرمز الحالي عند تسجيل الدخول
+
+**التحقق من الرمز:**
+```javascript
+const authenticator = require('otplib').authenticator;
+const OTP_SECRET = 'YOUR_SECRET_KEY_HERE';
+
+const isValid = authenticator.check(userEnteredCode, OTP_SECRET);
+// Returns: true أو false
+```
+
+**ملف failed-logins.json:**
+```json
+{
+  "admin": {
+    "failedCount": 2,
+    "lastFailed": "2025-11-06T10:30:00.000Z",
+    "lockUntil": null
+  }
+}
+```
+
+**قواعد الحظر:**
+- محاولة 1: "تبقى 2 محاولة قبل الحظر"
+- محاولة 2: "تبقى 1 محاولة قبل الحظر"
+- محاولة 3: حظر 12 ساعة (lockUntil = now + 43200000)
+- إعادة تعيين تلقائي بعد 24 ساعة
+
+نظام الجلسات (Sessions):
+-------------------------
+**إعدادات express-session:**
+```javascript
+app.use(session({
+  secret: 'your-secret-key-here',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    maxAge: 24 * 60 * 60 * 1000  // 24 ساعة
+  }
+}));
+```
+
+**Middleware للحماية:**
+```javascript
+function requireLogin(req, res, next) {
+    if (req.session && req.session.isLoggedIn) {
+        next(); // ✅ السماح بالوصول
+    } else {
+        res.status(401).send('غير مصرح بالدخول'); // ❌ رفض
+    }
+}
+
+// حماية صفحات لوحة التحكم
+app.use([
+    '/values.html',
+    '/users-table.html', 
+    '/settings.html',
+    '/papers.html'
+], requireLogin, express.static(__dirname));
+```
+
+**الصفحات المحمية:**
+┌────────────────────┬──────────────────────────────────────┐
+│    الملف           │         الوظيفة                      │
+├────────────────────┼──────────────────────────────────────┤
+│ values.html        │ تعديل نسب الأرباح (50 مستوى)        │
+│ users-table.html   │ إدارة حسابات الموظفين                │
+│ settings.html      │ إعدادات النظام العامة                │
+│ papers.html        │ إضافة/حذف أنواع الورق                │
+└────────────────────┴──────────────────────────────────────┘
+
+محتوى لوحة التحكم (cpanel-section):
+------------------------------------
+```html
+<div class="cpanel-container" id="cpanel-section" style="display:none;">
+    <h2>لوحة التحكم (سي بانل)</h2>
+    
+    <button class="cpanel-btn" onclick="window.location.href='values.html'">
+        إدارة القيم (values)
+    </button>
+    
+    <button class="cpanel-btn" onclick="window.location.href='users-table.html'">
+        إدارة المستخدمين (users-table)
+    </button>
+    
+    <button class="cpanel-btn" onclick="window.location.href='settings.html'">
+        إعدادات النظام (settings)
+    </button>
+    
+    <button class="cpanel-btn" onclick="window.location.href='papers.html'">
+        إدارة الورق (papers)
+    </button>
+</div>
+```
+
+**ميزة Keep-Alive المختلفة:**
+
+في index.html:
+```javascript
+setInterval(keepServerAlive, 180000); // كل 3 دقائق
+```
+
+في cpanel.html:
+```javascript
+setInterval(keepServerAlive, 300000); // كل 5 دقائق
+```
+
+في keep-alive.html:
+```javascript
+setInterval(keepServerAlive, 90000);  // كل 90 ثانية
+```
+
+**السبب:** لوحة التحكم تُستخدم لفترات أطول، لذا ping أقل تكراراً
+
+سيناريو استخدام كامل:
+-----------------------
+
+**للموظف (عبر index.html):**
+```
+1. فتح التطبيق → index.html
+2. إدخال (username: "ahmad", password: "123456")
+3. قراءة user-data.json من المتصفح
+4. مقارنة البيانات client-side
+5. حفظ في localStorage
+6. الانتقال إلى categories.html
+7. اختيار نوع الحاسبة (كتب/بروشورات/رسائل...)
+8. حساب الأسعار وطباعة النتائج
+```
+
+**للمدير (عبر cpanel.html):**
+```
+1. فتح المتصفح → cpanel.html
+2. إدخال (username: "admin", password: "رمز من Google Authenticator")
+3. إرسال POST إلى /login (server-side)
+4. التحقق من OTP_SECRET في server.js
+5. فحص failed-logins.json للحظر
+6. إنشاء جلسة (req.session.isLoggedIn = true)
+7. إظهار لوحة التحكم (4 أزرار)
+8. الوصول إلى الصفحات المحمية:
+   ✅ values.html (محمي بـ requireLogin)
+   ✅ users-table.html (محمي بـ requireLogin)
+   ✅ settings.html (محمي بـ requireLogin)
+   ✅ papers.html (محمي بـ requireLogin)
+```
+
+التوصيات الأمنية:
+------------------
+1. ✅ نقل OTP_SECRET إلى متغيرات البيئة (.env)
+2. ✅ تشفير كلمات المرور في user-data.json باستخدام bcrypt
+3. ✅ استخدام HTTPS في بيئة الإنتاج
+4. ✅ تفعيل CORS بشكل صحيح
+5. ✅ إضافة Two-Factor Authentication للموظفين أيضاً
+6. ✅ تسجيل جميع محاولات الدخول في ملف Audit Log
+7. ✅ إضافة إشعارات عند محاولات الاختراق
+
+================================================================================
                         📡 API Endpoints والمسارات
 ================================================================================
 
