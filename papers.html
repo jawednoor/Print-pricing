@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -500,7 +500,7 @@
                 rows.push(row);
             }
             // إرسال البيانات إلى الخادم
-            fetch('/save-papers', {
+            fetch('server.php/save-papers', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ papers: rows })

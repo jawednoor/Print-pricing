@@ -1,4 +1,4 @@
-<!-- دالة حساب D6 ستوضع داخل وسم <script> في نهاية الصفحة -->
+﻿<!-- دالة حساب D6 ستوضع داخل وسم <script> في نهاية الصفحة -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -1277,7 +1277,7 @@
         }
       
         // تعبئة قائمة نوع الورق الداخلي من السيرفر
-        fetch('/inner-paper-types')
+        fetch('server.php?action=inner-paper-types')
             .then(res => res.json())
             .then(data => {
                 console.log('أنواع الورق الداخلي (B2):', data);
@@ -1301,7 +1301,7 @@
             });
 
         // تعبئة قائمة نوع ورق الغلاف (B3) بنفس الأنواع (يمكن تخصيصها لاحقاً)
-        fetch('/inner-paper-types')
+        fetch('server.php?action=inner-paper-types')
             .then(res => res.json())
             .then(data => {
                 console.log('أنواع ورق الغلاف (B3):', data);

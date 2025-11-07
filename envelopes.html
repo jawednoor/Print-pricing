@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -278,7 +278,7 @@
         //===========================
         // تعبئة قائمة نوع الظرف من السيرفر
         //===========================
-        fetch('/inner-envelop-types')
+        fetch('server.php?action=inner-envelop-types')
             .then(res => res.json())
             .then(data => {
                 const select = document.getElementById('B1');

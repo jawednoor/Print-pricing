@@ -306,7 +306,7 @@
 		}
 		
 		try {
-			const res = await fetch('/user-data.json');
+			const res = await fetch('user-data.json');
 			if (!res.ok) {
 				throw new Error('فشل في تحميل بيانات المستخدمين');
 			}
@@ -524,7 +524,7 @@
 			return;
 		}
 		
-		fetch('/ping', {
+		fetch('server.php/ping', {
 			method: 'GET',
 			headers: {
 				'Cache-Control': 'no-cache'

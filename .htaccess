@@ -1,0 +1,11 @@
+# حماية ملف .env من الوصول المباشر
+<Files ".env">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# حماية ملفات JSON الحساسة (اختياري)
+<FilesMatch "\.(json)$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>

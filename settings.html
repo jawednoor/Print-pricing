@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -161,7 +161,7 @@
         }
         
         // جلب القيم من settings-display وعرضها في النموذج (مع تحويل النسب المئوية)
-    fetch('/settings-display')
+    fetch('server.php?action=settings-display')
             .then(res => res.json())
             .then(data => {
                 if (data) {
@@ -194,7 +194,7 @@
                 vat: parseFloat(document.getElementById('vat').value),
                 invoicePaperPrice: parseFloat(document.getElementById('invoicePaperPrice').value)
             };
-            fetch('/save-settings', {
+            fetch('server.php/save-settings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
