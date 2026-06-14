@@ -1,45 +1,46 @@
 {
   "name": "البصمة الفنية للإعلان",
-  "short_name": "تسعيرة طباعة الديجتال",
-  "start_url": "./index.html?v=10",
+  "short_name": "تسعير الديجتال",
+  "start_url": "./index.html?v=11",
   "display": "standalone",
   "background_color": "#ffffff",
+  "theme_color": "#2196f3",
   "description": "تطبيق أسعار الديجتال - البصمة الفنية للإعلان",
   "orientation": "portrait-primary",
   "scope": "./",
   "icons": [
     {
-      "src": "logo-app_1.png?v=10",
+      "src": "img/logo-app_1.png?v=11",
       "sizes": "96x96",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "logo-app_1.png?v=10",
+      "src": "img/logo-app_1.png?v=11",
       "sizes": "144x144",
-      "type": "image/png", 
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "logo-app_1.png?v=10",
+      "src": "img/logo-app_1.png?v=11",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "logo-albasmahart.png?v=10",
+      "src": "img/logo-albasmahart.png?v=11",
       "sizes": "256x256",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "logo-app_1.png?v=10",
+      "src": "img/logo-app_1.png?v=11",
       "sizes": "384x384",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "logo-albasmahart.png?v=10",
+      "src": "img/logo-albasmahart.png?v=11",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
