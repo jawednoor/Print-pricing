@@ -1,10 +1,12 @@
-const CACHE_NAME = 'basmahart-v10';
-const urlsToCache = [
+const CACHE_NAME = 'basmahart-v11';
+
+const STATIC_ASSETS = [
   './',
   './index.html',
   './categories.html',
   './books-magazines.html',
   './brochures-stickers.html',
+  './folder.html',
   './letters-memos.html',
   './envelopes.html',
   './invoices.html',
@@ -12,121 +14,78 @@ const urlsToCache = [
   './img/logo-app_1.png',
   './img/logo-albasmahart.png',
   './img/logo-albasmahart2.png',
-  './img/bg.gif',
-  './user-data.json',
-  './papers.json',
-  './settings.json',
-  './values.json',
-  './update-handler.js'
+  './img/bg.gif'
 ];
 
-// تثبيت service worker وحفظ الملفات في الكاش
-self.addEventListener('install', function(event) {
-  console.log('Service Worker installing... v10 - INSTALLED-ONLY UPDATES');
-  // إجبار التنشيط الفوري بدون انتظار
+const NEVER_CACHE = [
+  '/server.php',
+  '/user-data.json',
+  '/failed-logins.json',
+  '/papers.json',
+  '/settings.json',
+  '/values.json'
+];
+
+self.addEventListener('install', (event) => {
   self.skipWaiting();
-  
   event.waitUntil(
-    // مسح جميع الكاشات القديمة أولاً
-    caches.keys().then(function(cacheNames) {
-      return Promise.all(
-        cacheNames.map(function(cacheName) {
-          console.log('Deleting cache:', cacheName);
-          return caches.delete(cacheName);
-        })
-      );
-    }).then(() => {
-      // فتح كاش جديد تماماً
-      return caches.open(CACHE_NAME);
-    }).then(function(cache) {
-      console.log('Opened fresh cache v10');
-      // إضافة الملفات الجديدة
-      return cache.addAll(urlsToCache);
+    caches.open(CACHE_NAME).then(async (cache) => {
+      await Promise.allSettled(STATIC_ASSETS.map((asset) => cache.add(asset)));
     })
   );
 });
 
-// تنشيط service worker
-self.addEventListener('activate', function(event) {
-  console.log('Service Worker activating... v10 - INSTALLED-ONLY UPDATES');
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    // إجبار السيطرة على جميع التبويبات المفتوحة
-    clients.claim().then(() => {
-      console.log('Service Worker v10 now controls all pages');
-
-      // إرسال إشعار فوري ومباشر لجميع العملاء
-      return clients.matchAll({includeUncontrolled: true, type: 'window'}).then(clientList => {
-        console.log('Found', clientList.length, 'clients to notify');
-        clientList.forEach((client, index) => {
-          console.log('Sending notification to client', index);
-          client.postMessage({
-            type: 'UPDATE_AVAILABLE',
-            message: 'تحديث v10 متوفر - تحديثات للتطبيقات المثبتة فقط',
-            version: 'v10',
-            forced: true,
-            timestamp: new Date().toLocaleTimeString('ar-SA')
-          });
-        });
-      });
-    }).then(() => {
-      // مسح جميع الكاشات مرة أخرى للتأكد
-      return caches.keys().then(function(cacheNames) {
-        return Promise.all(
-          cacheNames.map(function(cacheName) {
-            if (cacheName !== CACHE_NAME) {
-              console.log('Force deleting cache during activate:', cacheName);
-              return caches.delete(cacheName);
-            }
-          })
-        );
-      });
-    })
+    caches.keys()
+      .then((names) => Promise.all(names.filter((name) => name !== CACHE_NAME).map((name) => caches.delete(name))))
+      .then(() => self.clients.claim())
   );
 });
 
-// استرداد الملفات - دائماً جلب النسخة الجديدة للملفات المهمة
-self.addEventListener('fetch', function(event) {
-  // الملفات المهمة التي نريد تحديثها دائماً
-  const importantFiles = ['manifest.json', 'img/logo-app_1.png', 'img/logo-albasmahart.png', 'index.html'];
-  const url = new URL(event.request.url);
-  const isImportantFile = importantFiles.some(file => url.pathname.includes(file));
-  
-  if (isImportantFile) {
-    // للملفات المهمة، جلب النسخة الجديدة دائماً
+self.addEventListener('fetch', (event) => {
+  const request = event.request;
+  if (request.method !== 'GET') return;
+
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return;
+
+  if (NEVER_CACHE.some((path) => url.pathname.endsWith(path))) {
+    event.respondWith(fetch(request, { cache: 'no-store' }));
+    return;
+  }
+
+  if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).then(response => {
-        // حفظ في الكاش
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request).then((cached) => cached || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  event.respondWith(
+    caches.match(request).then((cached) => {
+      const network = fetch(request).then((response) => {
         if (response.ok) {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, responseClone);
-          });
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
         }
         return response;
-      }).catch(() => {
-        // في حالة عدم توفر الإنترنت، استخدم الكاش
-        return caches.match(event.request);
-      })
-    );
-  } else {
-    // للملفات الأخرى، استخدم الطريقة العادية
-    event.respondWith(
-      caches.match(event.request)
-        .then(function(response) {
-          if (response) {
-            return response;
-          }
-          return fetch(event.request);
-        }
-      )
-    );
-  }
+      });
+      return cached || network;
+    })
+  );
 });
 
-// التعامل مع الرسائل من العميل
-self.addEventListener('message', function(event) {
+self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
-    console.log('Force skipping waiting...');
     self.skipWaiting();
   }
 });
