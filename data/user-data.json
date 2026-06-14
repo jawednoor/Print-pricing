@@ -1,0 +1,17 @@
+[
+  {
+    "username": "admin",
+    "role": "admin",
+    "passwordHash": "pbkdf2_sha256$210000$8262083407671d4d7d337194570f5fca$ccc710c7986655a7080bbba648399fa4d266f4f49b8b0f9bea0839018b0ad0d0"
+  },
+  {
+    "username": "user",
+    "role": "user",
+    "passwordHash": "pbkdf2_sha256$210000$064c2675988f93d7a38058e11a6b495a$c73c0ffaff9e6d1edf9468314bdcb4d5e0e9534bf3b568d838190aef5db376fd"
+  },
+  {
+    "username": "123",
+    "role": "user",
+    "passwordHash": "pbkdf2_sha256$210000$4e51c34d261d1be4ea2d16c5952fb598$064b08f530d14b9963d31727d66999f22307fcc6fb8cb58c6f0ee67ff1624af7"
+  }
+]
