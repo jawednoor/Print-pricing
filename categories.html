@@ -9,49 +9,17 @@
   <style>
     * { box-sizing: border-box; }
     html, body { min-height: 100%; margin: 0; }
-    body {
-      min-height: 100vh;
-      min-height: 100dvh;
-      padding: 24px;
-      background: linear-gradient(135deg, #328cc0, #00bcd4);
-      font-family: "Cairo", "Segoe UI", sans-serif;
-      display: grid;
-      place-items: center;
-    }
-    .container {
-      width: min(100%, 1040px);
-      padding: 34px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.97);
-      box-shadow: 0 18px 60px rgba(0, 44, 74, 0.24);
-      text-align: center;
-    }
-    .logo { width: min(300px, 70%); height: auto; margin-bottom: 20px; }
+    body { min-height: 100vh; min-height: 100dvh; padding: 24px; background: linear-gradient(135deg, #328cc0, #00bcd4); font-family: "Cairo", "Segoe UI", sans-serif; display: grid; place-items: center; }
+    .container { width: min(100%, 1040px); padding: 34px; border-radius: 20px; background: rgba(255,255,255,.97); box-shadow: 0 18px 60px rgba(0,44,74,.24); text-align: center; }
+    .logo { width: min(300px,70%); height: auto; margin-bottom: 20px; }
     .welcome { margin: 0 0 24px; color: #267ca9; font-size: 1.05rem; }
-    .button-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
-    .category-btn {
-      min-height: 90px;
-      padding: 16px;
-      border: 0;
-      border-radius: 14px;
-      color: #fff;
-      background: linear-gradient(90deg, #00bcd4, #328cc0);
-      box-shadow: 0 5px 14px rgba(50, 140, 192, 0.2);
-      font: inherit;
-      font-size: clamp(1.1rem, 2.4vw, 1.55rem);
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .category-btn:hover { background: linear-gradient(90deg, #267ca9, #00a7bb); transform: translateY(-1px); }
-    #adminButton { display: none; background: linear-gradient(90deg, #ff9800, #f44336); }
+    .button-list { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; }
+    .category-btn { min-height: 90px; padding: 16px; border: 0; border-radius: 14px; color: #fff; background: linear-gradient(90deg,#00bcd4,#328cc0); box-shadow: 0 5px 14px rgba(50,140,192,.2); font: inherit; font-size: clamp(1.1rem,2.4vw,1.55rem); font-weight: 700; cursor: pointer; }
+    .category-btn:hover { background: linear-gradient(90deg,#267ca9,#00a7bb); transform: translateY(-1px); }
+    #adminButton { display: none; background: linear-gradient(90deg,#ff9800,#f44336); }
     .logout { margin-top: 22px; border: 0; background: transparent; color: #a12c2c; font: inherit; font-weight: 700; cursor: pointer; }
     .loading { color: #267ca9; font-weight: 700; }
-    @media (max-width: 760px) {
-      body { padding: 0; background: #fff url("img/bg.gif") center/cover no-repeat; }
-      .container { min-height: 100dvh; border-radius: 0; box-shadow: none; padding: 28px 14px; }
-      .button-list { grid-template-columns: 1fr; gap: 12px; }
-      .category-btn { min-height: 64px; }
-    }
+    @media(max-width:760px){body{padding:0;background:#fff url("img/bg.gif") center/cover no-repeat}.container{min-height:100dvh;border-radius:0;box-shadow:none;padding:28px 14px}.button-list{grid-template-columns:1fr;gap:12px}.category-btn{min-height:64px}}
   </style>
 </head>
 <body>
@@ -66,62 +34,16 @@
         <button class="category-btn" data-page="folder.html">فولدرات</button>
         <button class="category-btn" data-page="letters-memos.html">خطابات ومذكرات</button>
         <button class="category-btn" data-page="envelopes.html">أظرف</button>
-        <button class="category-btn" data-page="invoices.html">فواتير</button>
         <button id="adminButton" class="category-btn" data-page="cpanel.html">لوحة المدير</button>
       </div>
       <button id="logoutButton" class="logout" type="button">تسجيل الخروج</button>
     </section>
   </main>
-
   <script>
-    const statusElement = document.getElementById('status');
-    const content = document.getElementById('content');
-
-    document.querySelectorAll('[data-page]').forEach((button) => {
-      button.addEventListener('click', () => window.location.href = button.dataset.page);
-    });
-
-    async function loadSession() {
-      try {
-        const response = await fetch('server.php?action=session', {
-          credentials: 'same-origin',
-          cache: 'no-store'
-        });
-        if (!response.ok) throw new Error('session');
-        const session = await response.json();
-        if (!session.authenticated) {
-          window.location.replace('index.html');
-          return;
-        }
-
-        localStorage.setItem('loggedIn', 'true');
-        localStorage.setItem('username', session.username || '');
-        localStorage.setItem('role', session.role || 'user');
-        document.getElementById('welcome').textContent = `مرحبًا ${session.username || ''}`;
-        if (session.role === 'admin') document.getElementById('adminButton').style.display = 'block';
-        statusElement.hidden = true;
-        content.hidden = false;
-      } catch (error) {
-        statusElement.textContent = 'تعذر التحقق من الجلسة. أعد المحاولة.';
-      }
-    }
-
-    document.getElementById('logoutButton').addEventListener('click', async () => {
-      try {
-        await fetch('server.php?action=logout', {
-          method: 'POST',
-          credentials: 'same-origin',
-          headers: { 'Content-Type': 'application/json' },
-          body: '{}'
-        });
-      } finally {
-        localStorage.removeItem('loggedIn');
-        localStorage.removeItem('username');
-        localStorage.removeItem('role');
-        window.location.replace('index.html');
-      }
-    });
-
+    const statusElement=document.getElementById('status'),content=document.getElementById('content');
+    document.querySelectorAll('[data-page]').forEach(button=>button.addEventListener('click',()=>window.location.href=button.dataset.page));
+    async function loadSession(){try{const response=await fetch('server.php?action=session',{credentials:'same-origin',cache:'no-store'});if(!response.ok)throw new Error('session');const session=await response.json();if(!session.authenticated){window.location.replace('index.html');return}localStorage.setItem('loggedIn','true');localStorage.setItem('username',session.username||'');localStorage.setItem('role',session.role||'user');document.getElementById('welcome').textContent=`مرحبًا ${session.username||''}`;if(session.role==='admin')document.getElementById('adminButton').style.display='block';statusElement.hidden=true;content.hidden=false}catch(error){statusElement.textContent='تعذر التحقق من الجلسة. أعد المحاولة.'}}
+    document.getElementById('logoutButton').addEventListener('click',async()=>{try{await fetch('server.php?action=logout',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:'{}'})}finally{localStorage.removeItem('loggedIn');localStorage.removeItem('username');localStorage.removeItem('role');window.location.replace('index.html')}});
     loadSession();
   </script>
 </body>
