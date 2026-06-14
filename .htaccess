@@ -1,11 +1,13 @@
-# حماية ملف .env من الوصول المباشر
-<Files ".env">
-    Order allow,deny
-    Deny from all
-</Files>
-
-# حماية ملفات JSON الحساسة (اختياري)
-<FilesMatch "\.(json)$">
-    Order allow,deny
-    Allow from all
+Options -Indexes
+DirectoryIndex index.html
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule ^(?:config|data)(?:/|$) - [F,L,NC]
+RewriteRule ^values\.json$ server.php?action=values.json [QSA,L,NC]
+RewriteRule ^papers\.json$ server.php?action=papers.json [QSA,L,NC]
+RewriteRule ^settings\.json$ server.php?action=settings.json [QSA,L,NC]
+RewriteRule ^server\.php/(.+)$ server.php?action=$1 [QSA,L,NC]
+</IfModule>
+<FilesMatch "^(?:\.env|database\.php|database\.sql|.*\.log)$">
+Require all denied
 </FilesMatch>
