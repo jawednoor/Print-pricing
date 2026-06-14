@@ -7,6 +7,12 @@ if (strpos($path, '/data/') === 0 || $path === '/data') {
     exit('Not Found');
 }
 
+if (strpos($path, '/server.php/') === 0) {
+    $_SERVER['PATH_INFO'] = substr($path, strlen('/server.php'));
+    require __DIR__ . '/server.php';
+    return true;
+}
+
 $file = __DIR__ . $path;
 if ($path !== '/' && is_file($file)) {
     return false;
