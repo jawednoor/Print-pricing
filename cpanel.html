@@ -1,108 +1,56 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <title>لوحة التحكم - سي بانل</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Cairo', sans-serif; background: #f7f7f7; margin: 0; padding: 0; }
-        .cpanel-container { max-width: 420px; margin: 60px auto 0 auto; background: #fff; border-radius: 18px; box-shadow: 0 4px 24px #328cc033; padding: 32px 18px 24px 18px; text-align: center; }
-        #login-form { margin: 0 auto; max-width: 320px; }
-        #login-form label { display: block; margin-bottom: 6px; color: #328cc0; font-weight: bold; font-size: 1em; text-align: right; }
-        #login-form input[type="text"], #login-form input[type="password"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #bbb; font-size: 1.1em; font-family: 'Cairo', sans-serif; background: #f7fafd; box-sizing: border-box; margin-bottom: 14px; text-align: left; }
-        #login-form input:focus { border-color: #328cc0; outline: none; }
-        #login-form button.cpanel-btn { margin-top: 10px; font-size: 1.2em; padding: 16px 0; }
-        #login-error { color: #d32f2f; font-weight: bold; margin-bottom: 10px; text-align: center; }
-        h2 { color: #328cc0; margin-bottom: 32px; }
-        .cpanel-btn { display: block; width: 100%; margin: 18px 0; padding: 18px 0; font-size: 1.3em; font-weight: bold; color: #fff; background: linear-gradient(90deg,#328cc0 0%,#4caf50 100%); border: none; border-radius: 12px; box-shadow: 0 2px 8px #328cc033; cursor: pointer; transition: background 0.2s, transform 0.1s; }
-        .cpanel-btn:hover { background: linear-gradient(90deg,#4caf50 0%,#328cc0 100%); transform: scale(1.04); }
-        @media (max-width: 600px) { .cpanel-container { max-width: 100vw; border-radius: 0; box-shadow: none; padding: 10px 2px 2px 2px; } .cpanel-btn { font-size: 1em; padding: 14px 0; } }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; padding: 24px; display: grid; place-items: center; background: #f3f8fa; font-family: "Cairo", sans-serif; }
+    .panel { width: min(100%, 520px); padding: 30px; border-radius: 18px; background: #fff; box-shadow: 0 12px 40px rgba(50,140,192,.18); text-align: center; }
+    h1 { color: #267ca9; margin-top: 0; }
+    .status { min-height: 28px; color: #b42318; font-weight: 600; }
+    .actions { display: grid; gap: 14px; }
+    .button { display: block; width: 100%; padding: 16px; border: 0; border-radius: 12px; background: linear-gradient(90deg,#328cc0,#23a88b); color: #fff; font: inherit; font-size: 1.08rem; font-weight: 700; cursor: pointer; text-decoration: none; }
+    .button:hover { filter: brightness(.94); }
+    .secondary { margin-top: 18px; background: transparent; color: #267ca9; border: 0; font: inherit; font-weight: 700; cursor: pointer; }
+    @media (max-width: 600px) { body { padding: 0; } .panel { min-height: 100vh; border-radius: 0; box-shadow: none; display: flex; flex-direction: column; justify-content: center; } }
+  </style>
 </head>
 <body>
-    <div class="cpanel-container" id="login-section">
-        <h2>تسجيل الدخول للوحة التحكم</h2>
-        <form id="login-form" autocomplete="off" style="margin-bottom:0;">
-        <div>
-            <label for="username">اسم المستخدم</label>
-            <input type="text" id="username" name="username" placeholder="ادخل اسم المستخدم" style="background:#f7fafd;" value="admin">
-        </div>
-        <div>
-            <label for="password">كلمة المرور المؤقتة</label>
-            <input type="password" id="password" name="password" placeholder="ادخل كلمة المرور" required autocomplete="current-password">
-        </div>
-        <div id="login-error" style="display:none;"></div>
-        <button type="submit" class="cpanel-btn">دخول</button>
-        </form>
-    </div>
-    <div class="cpanel-container" id="cpanel-section" style="display:none;">
-        <h2>لوحة التحكم (سي بانل)</h2>
-        <button class="cpanel-btn" onclick="window.location.href='values.html'">إدارة القيم (values)</button>
-        <button class="cpanel-btn" onclick="window.location.href='users-table.html'">إدارة المستخدمين (users-table)</button>
-        <button class="cpanel-btn" onclick="window.location.href='settings.html'">إعدادات النظام (settings)</button>
-        <button class="cpanel-btn" onclick="window.location.href='papers.html'">إدارة الورق (papers)</button>
-    </div>
-    <script>
-    document.getElementById('login-form').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        var username = document.getElementById('username').value;
-        var password = document.getElementById('password').value;
-        var errorDiv = document.getElementById('login-error');
-        errorDiv.style.display = 'none';
-        try {
-            const res = await fetch('server.php/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
-            if (res.ok) {
-                // حفظ حالة تسجيل الدخول في localStorage
-                localStorage.setItem('loggedIn', 'true');
-                localStorage.setItem('username', username);
-                
-                document.getElementById('login-section').style.display = 'none';
-                document.getElementById('cpanel-section').style.display = 'block';
-            } else {
-                const data = await res.json();
-                errorDiv.textContent = data.message || 'بيانات الدخول غير صحيحة';
-                errorDiv.style.display = 'block';
-            }
-        } catch (err) {
-            errorDiv.textContent = 'تعذر الاتصال بالسيرفر';
-            errorDiv.style.display = 'block';
+  <main class="panel">
+    <h1>لوحة التحكم</h1>
+    <p id="status" class="status">جارٍ التحقق من صلاحية المدير...</p>
+    <section id="actions" class="actions" hidden>
+      <a class="button" href="values.html">إدارة القيم والنسب</a>
+      <a class="button" href="users-table.html">إدارة المستخدمين</a>
+      <a class="button" href="settings.html">إعدادات النظام</a>
+      <a class="button" href="papers.html">إدارة الورق</a>
+    </section>
+    <button class="secondary" type="button" onclick="window.location.href='categories.html'">العودة إلى التصنيفات</button>
+  </main>
+  <script>
+    async function verifyAdmin() {
+      try {
+        const response = await fetch('server.php?action=session', { credentials: 'same-origin', cache: 'no-store' });
+        const session = await response.json();
+        if (!session.authenticated) {
+          window.location.replace('index.html');
+          return;
         }
-    });
-    
-    // خدمة إبقاء السيرفر نشطاً في لوحة التحكم
-    function keepServerAlive() {
-        // تجنب إرسال ping في بيئة التطوير المحلية
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            return;
+        if (session.role !== 'admin') {
+          document.getElementById('status').textContent = 'ليس لديك صلاحية الدخول إلى لوحة المدير.';
+          return;
         }
-        
-        fetch('server.php/ping', {
-            method: 'GET',
-            headers: {
-                'Cache-Control': 'no-cache'
-            }
-        }).then(response => {
-            if (response.ok) {
-                console.log('Admin panel ping successful:', new Date().toLocaleTimeString('ar-SA'));
-            }
-        }).catch(error => {
-            console.log('Admin panel ping failed:', error.message);
-        });
+        document.getElementById('status').textContent = `مرحبًا ${session.username}`;
+        document.getElementById('status').style.color = '#087443';
+        document.getElementById('actions').hidden = false;
+      } catch (error) {
+        document.getElementById('status').textContent = 'تعذر الاتصال بخادم PHP.';
+      }
     }
-
-    // بدء خدمة keep-alive في لوحة التحكم
-    window.addEventListener('load', function() {
-        // ping فوري بعد 10 ثوان من التحميل
-        setTimeout(keepServerAlive, 10000);
-        
-        // ثم ping كل 5 دقائق (300 ثانية)
-        setInterval(keepServerAlive, 300000);
-    });
-    </script>
+    verifyAdmin();
+  </script>
 </body>
 </html>
